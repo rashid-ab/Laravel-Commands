@@ -1,0 +1,4251 @@
+
+
+
+Xampp problem:
+follow the link
+https://stackoverflow.com/questions/15169861/xampp-error-mysql-shutdown-unexpectedly
+
+
+
+
+Creating a new laravel project
+	I. First goto cms folder using following commods (if we are going from root directory)
+			i.   cd c: 
+			ii.  cd xampp/htdocs/
+			iii. composer create-project --prefer-dist laravel/laravel projectName version(optional)
+	
+	2. For creating it through Homestead.
+			i.   First we must have installed composer 
+			ii.  Then run :-  composer global require "laravel/installer"
+			iii. Then go to Maped project File. ( Means in Homestead.yaml File we have mapped project's Directory In my current case i have C:\Laravel-projects )
+			iv.  Then run following statement to create the project :-	laravel new ProjectName
+
+
+setting virtual host :- 
+
+	1. Without Homestead :- 
+
+		Note:- Run both below files as Administrator
+
+		I.   First go to C:\xampp\apache\conf\extra\httpd-vhosts
+			i. add virtual host like below 
+			
+				<VirtualHost *:80>
+					DocumentRoot "C:/xampp/htdocs/login/public" ( compelete path of our project )
+					ServerName login.com ( url to go to specific site )
+				</VirtualHost>
+		II.  Then go to C:\Windows\System32\drivers\etc\hosts
+			ii. Add url like below same as above ServerName like below  
+				127.0.0.1      	login.com
+	
+		III. Then make sure to restart xampp services 
+	
+	2. With Homestead :- 
+
+			
+			
+laravel commands :- 
+
+	1- For Creating the simple defualt controller :  
+		I. First goto cms folder using following commods (if we are going from root directory)
+			i. cd c: 
+			ii. cd xampp/htdocs/
+			iii. cd cms/
+		II. Now we are in the cms directory, Now we can create controller directly by executing the following
+		    command.
+			i.  php artisan make:controller Name_Of_The_Controller
+	
+	2. For Creating resource controller :
+		I. First go to cms Directory as mentioned above 
+		II. Execute Following command
+			i. php artisan make:controller  --resource Name_Of_The_Controller
+
+	3. To see all the commands of php artisan 
+		i.  Execute following command
+			=> php artisan 
+	
+	4. To see all the route list 
+		=> php artisan route:list 
+
+	5. To create table with migration 
+		=> php artisan migrate
+
+	6. For making our own custom new migration 
+		=> php artisan make:migration create_posts_table --create="posts"
+
+	7. For undo the migration command 
+		=> if we want to rollback last migration
+								=> php artisan migrate:rolllback
+		
+		=> if we want to rollback last 5 or 6 or any number of migrations then use below 
+								=> php artisan migrate:rollback --step=5
+	
+	8. To change structure of the table while having the data safe or adding 
+	   new column to the table. ( Data remains safe )
+		=> php artisan make:migration name_of_the_column --table="name_of_table"; 
+
+	9. If we want to delete all database data means deleting all tables and reseting whole
+	   database then 
+		=> php artisan migrate:reset
+
+	10. we can also check the status of the migrations that how many migrations are 
+	    and how many of them are running etc ...
+		=> php artisan migrate:status 
+
+	11. we can also refresh all the migrations Means first all migrations are rolled back 
+	    and then all migrations are migrated
+		=> php artisan migration:refresh 
+	
+	12. For creating a model 
+		=> php artisan make:model Name_Of_Model
+	
+	13. To create a modal and migration at the same time in a single command 
+		=> php artisan make:model Name_of_the_model -m		
+
+	14. To create a new table through migration Or creating a pivot table (jis men many to many ka relation ho to 1 alag table bna lete hen jis men dono ki id's pri hoti hen )
+		=> php artisan make:migration Table_Name --create=NameOfTable
+
+	Important Note -> we can make Everything ( Model , Controller and Migration ) with only one command given below
+
+		=> php artisan make:model NameOfModel -m -r
+
+
+												Using Storage in Laravel
+
+	i.	We mostly store our images inside of this folder because it is more secure to have images there in the app folder inside storage folder
+
+			=>	let suppose we have public folder inside of app folder and default folder inside public folder and avatar folder in defaults folder
+				
+				and in avatar we have all the images then how we can access it into our blade.php files
+
+			=> 	first we have to enable storage link by running following command
+
+					=> php artisan storage:link
+
+			=>      Now use it like below in our blade.html code 
+
+		Note: Must show a tutorial for that , Its much needed for better secuity of our images and files on the internet
+
+
+						
+											Using NOTY To show Notifications in Laravel
+
+
+		=> NOTY package actually show notifications through JavaScript in our page 
+
+		=> to install NOTY in our project just run following command
+	
+			=> composer require needim/noty
+			
+			Note: We must have installed node package manager ( npm ) in our project by running following command
+		
+				=> npm install 
+		
+		Then Add to resources/assets/sass/app.scss
+
+				@import "~noty/src/noty.scss";
+				@import "~noty/src/themes/mint.scss";
+
+		Then Add to resources/assets/js/bootstrap.js
+
+				window.Noty = require('noty');
+
+		=> then run following command to compile javaScript files 
+
+				=> npm run dev 
+				Or 
+				=> npm run watch
+	
+		=> then go to the views and go to the master layout means open app.blade.php then paste following script reference 
+
+				=> <script src="{{ asset('js/app.js') }}"></script>
+		
+		=> then go to the view where we want to show notifications Or just simply use following in the buttom of app.blade.php and make script tag and in that tag use following code 
+
+				=>	new Noty({
+                				type: 'success',
+                				layout: 'top',
+                				text: 'Message to show'
+            				}).show();
+
+		Note :- For more go to online Documentation : https://ned.im/noty/#/installation?id=install-via-npm
+
+												Dealing With Migrations
+
+	1  Let suppose we want to change structure of the table like let suppose we want to change column's properties like varchar (255) to varchar (200) then 
+	   We have to follow following steps 
+
+			i.	First Add following dependancies into the "composer.json" file
+												=> "doctrine/dbal": "v2.4.2",
+			ii. 	Then update your composer using following command
+
+												=> composer update 
+			iii. 	then make new migration with reference to the table in which we want to make change
+												=> php artisan make:migration name_of_the_column --table="name_of_table";
+			iv.     And inside of up function write below lines 
+
+												public function up()
+    												{
+        												Schema::table('posts', function (Blueprint $table) {
+            													$table->string('body',200)->change();
+														
+														//  we can also make other changes like making it nullable or unsigned or default like below
+														$table->string('body',200)->nullable()->change();
+        												});
+    												}	
+			v.	php artisan migrate
+			
+	2 let supposer we want to change the name of the column like we have a column body in the posts table and we want to rename that table name to content then we have to follow following steps
+
+			i. 	Do iii step only from above and in the 4th step just change up function body something like below
+
+												public function up()
+    												{
+        												Schema::table('posts', function (Blueprint $table) {
+														$table->renameColumn('body','content');
+        												});
+    												}	
+			ii.	php artisan migrate
+
+	3 let suppose we want to drop single or multiple columns from a table then we have to follow following steps
+
+			i.     Do All i.ii.iii steps from above "1" and then inside of up function do paste following code
+					in case of single column :- 
+												public function up()
+    												{
+        												Schema::table('posts', function (Blueprint $table) {
+														$table->dropColumn('body');
+        												});
+    												}	
+
+					in case of multiple column :- 
+												public function up()
+    												{
+        												Schema::table('posts', function (Blueprint $table) {
+														$table->renameColumn(['body','is_admin']);
+        												});
+    												}	
+			ii.	php artisan migrate
+
+											Dealing with Foriegn keys with Migrations
+
+
+	1. Let suppose we want to create foreign key of users table into posts table then we have to follow following steps
+
+			i.	First make a new migration if we already have created posts table and in in the up function right below 
+
+											        public function up()
+    												{
+        												Schema::table('posts', function (Blueprint $table) {
+            													// Note: When creating a foreign key that references an 
+														// incrementing integer, remember to always make the foreign key column unsigned.
+            
+														$table->integer('user_id')->unsigned();
+            													// A foreign key with cascade delete means that if a record 
+														// in the parent table is deleted, then the corresponding records in 
+														// the child table will automatically be deleted. 
+														// This is called a cascade delete in SQL Server.
+            													$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+    												}	
+
+			ii.    In case we are creating new posts table then we may have to right all above up function's body inside of up function like below
+												public function up()
+    												{
+        												Schema::create('posts', function (Blueprint $table) {
+           												$table->increments('id')->unsigned();
+            												$table->string('title')->unique();
+            												
+            												
+													// creating foreign key 
+														$table->integer('user_id')->unsigned();
+														$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+	
+													$table->timestamps();
+        												});
+    												}
+
+
+
+											Dealing with Eloquent
+
+	Points to remmember :- 
+
+				i.	Eloquest by default consider that the model's table has primary key as "id".
+					If Some reason we named our id column as post_id or user_id then we have to tell eloquent 
+					through defining protected property in the model like below 
+
+										=> protected $primaryKey = 'id';
+
+				2.      Eloquent by default consider the model name like Post for posts table in database. or User for users table
+					If Some reason we named our model defferently from convention means for example our table is posts and we have created 
+					the model with UserPosts name. then we we have to tell eloquent that this model is going to handle another table like below 
+
+										=> protected $table = 'posts';	
+	
+				
+
+
+	Brief Study about Eloquent => in C:\xampp\htdocs\first\routes\web.php ( Note :- I Have give headings so go and check it out )
+
+     
+											Working with SoftDeletes
+
+	=> To add SoftDelete functionality in our table we have to follow following steps
+
+				1.	First use following two things in the model as we have added in Post model as an example 
+
+					i.	use Illuminate\Database\Eloquent\SoftDeletes;
+
+					class Post extends Model
+					{
+						ii.	use SoftDeletes;
+
+						iii.	protected $dates = ['deleted_at'];
+					}
+								
+				2. 	Then make a new migration to add softDelete column in the posts table like something like below 
+						=>	php artisan make:migration to_add_deleted_at_column_in_posts_table --table=posts
+				3.	And write something like below we have writen in up and down functions
+	
+
+					public function up()
+    					{
+        					Schema::table('posts', function (Blueprint $table) {
+						=>	$table->softDeletes();
+        					});
+    					}
+
+    					/**
+     					* Reverse the migrations.
+     					*
+     					* @return void
+     					*/
+    					public function down()
+    					{
+        					Schema::table('posts', function (Blueprint $table) {
+						=>	$table->dropColumn('deleted_at');
+        					});
+    					}
+
+
+	=> If we want to show soft deleted items from the table then use following query 
+
+				=>	Post::withTrashed()->where('id', 9)->get();
+							
+							    OR
+
+				=>      Post::onlyTrashed()->where('id', 9)->get();	
+
+
+	=> If i want to restore my soft deleted items then follow below 
+
+				=>	Post::onlyTrashed()->where('id', 9)->restore();
+
+	=> If i want to delete soft deleted records permantly then i have to use following command
+
+				=>      Post::onlyTrashed()->where('id', 9)->forceDelete();
+
+
+
+
+											ELOQUENT RELATIONSHIPS
+
+			1.	One to One :- ( Mtlb k, 1st table k 1 record k against 2nd table men 1 e record ho ga mtlb jese 1 bnde ka 1 e CNIC number ho skta , esi tarah 1 CNIC b sirf 1 bande k e ho skta
+						mtlb k dono tables k reconds k against dono tables men 1 e value ho gi this is called One to One relationship )
+						i.	First i have placed user_id in the posts table as a foreign key.
+						ii.	then go to User Model and write following method
+
+									public function post(){
+        
+									        return $this->hasOne('App\Post');
+
+									        // By default foreign key will be consider as user_id 
+									        // But let suppose we have named something else we have to tell that name in the second parameter
+        									// as below like for example we have foreign key with name "the_user_id" then we have to tell 
+        									// like below
+            										// return $this->hasOne('App\Post','the_user_id');
+        									// Same as above by default id of User Model will be consider as "id". if we have used something 
+        									// else like user_id then we have to tell that as well in the thired parameter like below 
+            										// return $this->hasOne('App\Post','the_user_id','user_id');
+    									}
+
+						iii.	And access post of a particular user through following line. 
+
+									=>	User::find($id)->post->title(property_which_we_want_access);
+
+						
+			Inverse :- Means we want to get inverse means above we get posts of a particular user and now we want to get users of a particular post then we have to follow following steps
+				
+						i.	First go to Post Model and write following method
+
+									public function user(){
+									    	return $this->belongsTo('App\User');
+
+									    	// By default foreign key will be consider as user_id 
+        									// But let suppose we have named something else we have to tell that name in the second parameter
+        									// as below like for example we have foreign key with name "the_user_id" then we have to tell 
+        									// like below
+            										// return $this->hasOne('App\Post','the_user_id');
+        									// Same as above by default id of User Model will be consider as "id". if we have used something 
+        									// else like user_id then we have to tell that as well in the thired parameter like below 
+            										// return $this->hasOne('App\Post','the_user_id','user_id');
+									} 
+
+												CRUDS With One to One relationship						
+						
+						Note :- This example is explained in "first" project between Address and User
+
+						// Reading =>
+
+						ii. 	Access user of a particular post like below
+
+									=>	Post::find($id)->user->name;											
+
+						// Creating :- Means if we want to create a post of a user or if we want to add an address of a user etc... 
+									
+									=> 	$user = User::find($id);
+   	 									$address = new Address(['name'=>'Street No 4']);
+   										$user->address()->save($address); 
+							=> It will store address of a user
+
+						// Updating :- If we want to update address of a particular user then 
+
+									=>	$address = Address::where('user_id',1)->first();
+										$address->name = 'Updated';
+    										$address->save();						
+							
+						// Deleting :- If we want to delete an address of a particular user then 
+
+									=> 	Address::where('user_id', 1)->delete();
+
+
+			2.	 One to Many Relationship:- ( mtlb 1st table k 1 record k against 2nd table k multiple records hun or 2nd table k 1 record k against 1st table men 1 record ho )
+
+						User ki primary key Posts men as a foreign key use hoo rai neche wali example men 
+						Mtlb jis table ki primary key use ho rai dosre table men os table k Model men jaaa k nechla code likhna he 
+
+						Note :-  This example is explained in "first" project between Country and User AND Also with Post and Users But Explained well in Post and User
+
+						i.	First go to User Model and write following method
+					
+									public function posts(){
+	
+      	 	 								return $this->hasMany('App\Post');
+
+    									}			
+						ii.	Access posts of a particular user using following lines
+
+								$posts = User::find($id)->posts;
+    								foreach ($posts as $post) {
+        								echo $post->title . "<br>";
+    								}
+		
+
+				inverse :- 
+						iii.	Go to Post Model and write following method
+
+									public function user(){
+									        return $this->hasOne('App\User');
+    									}						
+									
+				
+												CRUDS With One to One relationship						
+						
+						Note :- This example is explained in "first" project between Post and User
+				
+										
+						// Reading 
+Route::get('user/{id}/posts', function($id) {
+    $posts = User::find($id)->posts;
+    foreach ($posts as $post) {
+        echo $post->title . "<br>";
+    }
+});
+
+
+						// Inverse 
+
+Route::get('post/{id}/user', function($id) {
+    return Post::find($id)->user->name;
+});
+
+
+						// Creating (Means we want to create a post with reference to some user)
+	
+Route::get('create/post/of/user/{id}', function($id) {
+    $user = User::find($id)->first();
+    $post = new Post(['title'=>'Created','body'=>'Created Successfully']);
+    $user->posts()->save($post);
+});
+
+						// Updating (mtlb kisi 1 user ki post update kerni he to ?)
+
+Route::get('update/post/of/user/{id}', function($id) {
+    $user = User::find($id)->first();
+    $user->posts()->where('id', 1)->update(['title'=>'Updated ?', 'body'=>'Updated Successfully']);
+});
+
+
+						// Deleting (Mtlb kisi 1 user ki posts del kerni hun to)
+
+Route::get('delete/posts/of/user/{id}', function($id) {
+    $posts = User::find($id)->posts->all();
+    foreach ($posts as $post) {
+        $post->forceDelete();
+    }
+});
+
+						
+
+			3.	Many to Many Relationship :- ( dono tables k 1 record k against multiple record hote hen dono sides se. es case men hum 1 pivot table bnate hen jis men dono ki id 
+							       As a foreign key use hoti he )
+
+						i.	Roles ( Convention ) for making an pivot table in laravel :- 
+						
+														Lets understand that with an example let suppose we have users and roles tables 
+														and we want to assign roles to users so that it will be done in a pivot table by
+														giving id's of both user and role.
+
+														=> Rules for making pivot table 
+																i.   use both tables names separated with underscore and singular
+																     like ( role_user )
+																ii.  Another thing to remmember is that the name must be alphabatically
+																     Ordered. Means role's 'r' comes first than user's 'u' in english
+	
+						ii.	Run following command to make migration to create pivot table
+
+									=>	php artisan make:migration create_users_roles_table --create=role_user
+
+						iii.	Then in the above migration add two columns ( role_id AND user_id ) in the same convention as given in the example
+
+									public function up()
+    									{
+        									Schema::create('role_user', function (Blueprint $table) {
+            										$table->increments('id');
+            										$table->integer('user_id');
+            										$table->integer('role_id');
+            										$table->timestamps();
+        									});
+    									}			
+						
+						iv.	Then go to User Model and right following function 
+
+									public function roles(){
+     									
+										return $this->belongsToMany('App\Role');
+   						 			
+									}
+
+
+						v.	Then go to Role Model and right following function 
+
+									public function users(){
+    									
+										return $this->belongsToMany('App\User');
+    									
+									}
+
+
+						vi.	Now access roles of a user like below
+
+									$roles = User::find($id)->roles;
+	
+									// We can also do more customizations 
+									// $roles = User::find($id)->roles()->orderBy('id','desc')->get();									
+
+    									foreach ($roles as $role) {
+        									echo $role->name;
+    									}
+
+						vii.	Now access users of a role like below						
+
+
+						Note :-  In case we don't follow the convention disscussed above then we have to give information to to laravel like below
+
+									i.	In point iv and v we have to give information of table name and foreign keys like below
+
+											public function roles(){
+     									
+												return $this->belongsToMany('App\Role','table_name_like_(user_roles)','first_foreignKey_(user_id)','second_foreignKey_(role_id)');
+   						 						
+												// below cleaned form if you don't understand above
+												
+												return $this->belongsToMany('App\Role','user_roles','user_id','role_id');
+											}
+						
+
+						Note :- Accessing pivot table 
+
+									i.	First go to User Model or Role Model and modify relation function
+
+											public function roles(){
+        											return $this->belongsToMany('App\Role')->withPivot('created_at');
+    											}
+							
+	
+									ii.	Access pivot table values like below
+
+											$roles = User::find($id)->roles;
+
+    											foreach ($roles as $role) {
+        											echo $role->pivot->created_at;
+    											} 				
+
+
+										// CRUDS With Many to Many Relation
+
+// Creating
+
+Route::get('create/role/to/user/{id}', function($id) {
+    $user = User::find($id);
+    $role = new Role(['name'=>'subscriber']);
+    $user->roles()->save($role);
+});
+
+// Updating User's Role
+
+Route::get('update/role/of/user/{id}', function($id) {
+    $user = User::find($id);
+
+    if($user->has('roles')){
+        foreach ($user->roles as $role) {
+            if($role->name == 'subscriber'){
+                $role->name = 'admin';
+                $role->save();
+            }
+        }
+    }
+});
+
+
+// Deleting User's Role 
+
+Route::get('delete/role/of/user/{id}', function($id) {
+    $roles = User::find($id)->roles;
+    foreach ($roles as $role) {
+        $role->delete();
+    }
+});
+
+
+// Attaching a role with a user 
+
+Route::get('attach/role/{role_id}/to/user/{user_id}', function($role_id,$user_id) {
+    $user = User::find($user_id);
+    $user->roles()->attach($role_id);
+});
+
+// Dettaching a role with a user 
+
+Route::get('dettach/role/{role_id}/to/user/{user_id}', function($role_id,$user_id) {
+    $user = User::find($user_id);
+    $user->roles()->detach($role_id);
+});
+
+// Sync roles with user
+
+/*
+
+    Above attach() function will attach a new role to user means dosn't matter how many roles a user 
+    have before. it just add another role to that user. 
+
+    But if we want to add new roles to user by overriding all previous roles. then use Asyc method
+    And give an array of roles to a user to set like below
+
+*/
+
+Route::get('sync/role/to/user/{id}', function($id) {
+    $user = User::findOrFail($id);
+    $user->roles()->sync([1,2]);
+});
+
+
+
+			4.	Has Many through relationship :- ( For example :- we want to access posts of a particular country. but we don't have direct relationship of posts table  with countries table
+								   But we have relationship of countries table with users table. and users table have relationship with posts table. Means we can get posts of 
+								   countries through users table then follow following steps For more go to :- https://laravel.com/docs/5.6/eloquent-relationships )
+
+								   i. in the Country Model paste following function with all conventions must be followed																			
+											
+										public function posts()
+    										{
+        										return $this->hasManyThrough('App\Post', 'App\User');
+    										}										
+								   
+								   Note :-
+										The first argument passed to the hasManyThrough method is the name of the final model we wish to access, 
+										while the second argument is the name of the intermediate model.
+										Typical Eloquent foreign key conventions will be used when performing the relationship's queries. 
+										If you would like to customize the keys of the relationship, you may 
+										pass them as the third and fourth arguments to the hasManyThrough method. 
+										The third argument is the name of the foreign key on the intermediate model. 
+										The fourth argument is the name of the foreign key on the final model. 
+										The fifth argument is the local key, while the sixth argument is the local key of the intermediate model: 
+										
+										If we don't follow conventions of primary and foreign keys then we have to give thired , forth and fifth parameters
+										like below 
+
+										public function posts()
+    										{
+        										return $this->hasManyThrough('App\Post','App\User',
+            													     'country_id', // Foreign key on users table...
+            													     'user_id', // Foreign key on posts table...
+            													     'id', // Local key on countries table...
+            													     'id' // Local key on users table...
+        										);
+    										}
+
+
+				
+
+
+			5.	Polymorphic Relationship :- ( In Laravel Documentation explained very well )
+
+						Some Important points :- 
+										-> in the Comment table in the database insert commentable_type as App\Post Or App\Video etc...  
+						Note :-  First make all the relationships as mentioned in the Laravel Documentation
+
+									CRUDS with polymorphic Relationship 
+				Note :- This Example explained between Post and Video and Comments
+	
+
+
+				// Reading Video's Comments
+Route::get('posts/{id}/comments', function($id) {
+    $comments = Video::find($id)->comments;
+    foreach ($comments as $comment) {
+        echo $comment->body . "<br>";
+    }
+});
+
+// Creating Post's Comment
+
+Route::get('create/post/{id}/comment', function($id) {
+    $post = Post::find($id);
+    $post->comments()->create(['body'=>'Posts Comment Created']);
+});
+
+// Creating Video Comment
+
+Route::get('create/video/{id}/comment', function($id) {
+    $video = Video::find($id);
+    $video->comments()->create(['body'=>'Video Comment Created']);
+});
+
+// Updating Post's Comment 
+
+Route::get('update/post/{id}/comment',function($id){
+    $post = Post::findOrFail($id);
+    $comment = $post->comments()->where('id',1)->first();
+    $comment->body = "Updated Post Comment";
+    $comment->save();
+});
+
+// Do Update Video same as we did above
+
+// Deleting Post's Comment or video
+
+Route::get('delete/post/{id}/comment', function($id) {
+    $post = Post::find($id);
+    $post->comments()->where('id',1)->delete();
+});
+
+
+// Assigning Comment to a post or video (Just like a detach function)
+
+Route::get('assign/comment/{comment_id}/to/post/{post_id}', function($comment_id,$post_id) {
+    $post = Post::find($post_id);
+    $comment = Comment::find($comment_id);
+    $post->comments()->save($comment);
+});
+
+
+// Un-Assign Comment to a post or video
+
+Route::get('unasign/comment/{comment_id}/to/post/{post_id}', function($comment_id,$post_id) {
+    $post = Post::find($post_id);
+    $post->comments()->where('id', $comment_id)->update(['commentable_id'=> 0 ,'commentable_type'=>'']);
+});
+
+
+											Laravel HTML/Collective Forms 
+
+// Installing laravel Form and HTML package for your ease in sublime text 3 
+
+	For Code Snippets in Sublime Text :- 
+	https://packagecontrol.io/packages/LaravelCollective%20HTML%20Form%20Snippets	
+		
+	=> Read whole article		
+	
+	For Installing Laravelcollective in our project. ( Without them we can't use Forms In blade and many more )
+	https://laravelcollective.com/docs/5.4/html
+
+	=> Read whole article 
+
+	=> Shortcuts for creating some important elements in Sublime Text 3
+type first given text and press tab 
+
+Trigger Text         Elements
+
+formopen	{!! Form::open() !!}
+formclose	{!! Form::close() !!}
+formtoken	{!! Form::token() !!}
+formmodel	{!! Form::model($user, []) !!}
+formlabel	{!! Form::label($for, $text, []) !!}
+formtext	{!! Form::text($name, $value, []) !!}
+formtextarea	{!! Form::textarea($name, $value, []) !!}
+formpassword	{!! Form::password($name, []) !!}
+formhidden	{!! Form::hidden($name, $value, []) !!}
+formemail	{!! Form::email($name, $value, []) !!}
+formfile	{!! Form::file($name, []) !!}
+formcheckbox	{!! Form::checkbox($name, $value, $checked, []) !!}
+formradio	{!! Form::radio($name, $value, $checked, []) !!}
+formnumber	{!! Form::number($name, $value, []) !!}
+formdate	{!! Form::date($name, \Illuminate\Support\Carbon::now(), []) !!}
+formselect	{!! Form::select($name, $optionsArray, $defaultKey, []) !!}
+formselectrange	{!! Form::selectRange($name, $min, $max), [] !!}
+formselectmonth	{!! Form::selectMonth($name, []) !!}
+formsubmit	{!! Form::submit($text, []) !!}
+
+// installing laravelCollective/html
+
+	// Goto    https://laravelcollective.com/docs/5.0/html
+
+// For referencing some to route in the anchor tag 
+	i. Use url method instead of route as below 
+	i.e...
+	<a href="{{ url('admin.users.index') }}">
+
+
+
+										Dealing With Errors AND Validation messages
+
+	Note :- All Errors of the application are saved in a global variable called $errors but for this we have to use middleware 
+
+	for catching errors we must have to follow following steps :- 
+
+	i.	First enclose your route into a group route like below 
+
+		Route::group(['middleware' => 'web'], function() {
+    			// Setting Up Routes for Form 
+			Route::resource('/post', 'PostController');
+		});				
+
+	ii.	Now all the errors and validation errors of this Resource route will be saved in a global variable called "$errors" and we can access them anywhere like below 
+
+		@if(count($errors) > 0 )
+		{
+
+			foreach($errors->all() as $error)
+			{
+				echo $eror;	
+			}
+
+		}
+
+											Dealing Errors With Requests 
+
+	1.	For making an request :- 
+
+				=> php artisan make:Request NameOfRequest		
+	2.	Now define rules in the rules array like below
+
+				=> 'title' => 'required|max:30',
+				   'body'  => 'required|min:10',
+
+
+
+										  // Dealing database with "Tinker"
+
+	15. for go to Tinker
+		=> php artisan tinker
+	16. for exit 
+		=> exit
+	Inserting =====>	
+
+	16. For inserting data into table
+		=> $tableNamewithout_s = App\Name_of_model::create(Associative array of data with columns as shown below); 
+		e,g.   $post = App\Post::create(['is_admin'=>1,'AnotherColumn'=>'Row inserted with_tinker']);
+
+	17. We can also save data in the form of object with tinker 
+		i.   First create Object of the model 
+			=> $post = new App\Post();
+		ii.  Second add data to the object 
+			=> $post->is_admin = 1;
+			=> $post->AnotherColumn = "Column data";
+		iii. Thired Save the object to insert into the database
+			=> $post->save();
+
+	Reading =====>
+	18. For reading data from table
+		=> $NameOfTheTable_without_s = App\ModelName::find(1);
+		e.g.  $post = App\Post::find(1);
+		
+	19. Reading data with constraint 
+		=> $NameOftheTable_without_s = App\ModelName::where('name','Usama Farooq')->get();
+	
+	Updating data =====>
+
+	20. For Updating data 
+		=> first get the object like below 
+			$post = App\Post::find(1);
+		=> than change its attributes like below 
+			$post->AnotherColumn = "Any new data";
+			$post->is_admin = 0; 
+		=> than commit the change to call save method
+			$post->save();   
+	Deleting data =====>
+	
+	21. For Soft deleting any row
+		=> first find the row like below 
+			$post = App\Post::find(1);
+		=> then soft delete the row like below 
+			$post->delete();
+	
+	22. For Force deleting any row
+		=> first find the row like below 
+			$post = App\Post::find(1);
+		=> then soft delete the row like below 
+			$post->forceDelete();
+
+ 	23. For Force Deleting an existing Soft deleted item (mtlb soft deleted row ko forcely delete kerna)
+		=> $post = App\Post::onlyTrashed()->where('id',1)->forceDelete();
+
+	Working with relationships with tinker 
+
+	24. same as we have done in the Routes
+		first get the object than call method in the Model class to get data using relationships
+		=> For example for getting role of the user using many to many relationship ( as in cms/routes/line no 279 )
+			=> first we get the role 
+				=> $role = App\Role::find(1);
+			=> then call Role's users method that we have setup for many to many relationship
+				=> $role->users
+	Same as above example we can perform all relationships , No difference as we have done in the routes 
+	25. For updating composer.json file 
+		=> composer update
+
+
+
+											Laravel Seeds And Factories
+	=> in order to create dummy data we have to create Factories and Seeds
+
+	=> first we have to create Factories
+
+	Factories :- 
+
+		=> to create new factories go to ModelFactory.php inside database->factories
+		
+		=> then copy the factory code from $factory to ; ( mtlb jo pehle 1 block of code bna para he wo 1 factory he , osi ko copy and paste 
+		   ker do 1 line chor k neche or name change ker do os ka  App\User ki bajaye apne model ka name likh lo ) ( Factory bnane se pehle os table ka model bana hona chaye )			
+
+		Note :- we can also make dummy data through tinker means once we have a factory then we just have to go to tinker and run followin command in tinker 
+
+			=> factory('App\User',5)->create();
+			
+			Note :- above first argument is the model name and second is the number of records we want to generate 
+
+	Seeds :- 
+
+		=> to create a seeder run following commad
+				=> php artisan make:seeder SeederName
+	
+		=> And inside the run methode call ParticularModel ( like User ) (Means Particular table like users) Factory as shown below 
+				=> factory(App/ModelName::class,10)->create();
+				like below 
+				=> factory(App/User::class,10)->create();
+
+		=> then go to DatabaseSeeder.php inside database->seeds and inside the run method call above seeder ( we can call as many as we want )
+
+				=> $this->call(SeederName::class);	 
+
+
+	Then At the Last run following command to add dummy data into the database
+
+				=> php artisan db:seed
+
+	Done Dummy data has been added to the database
+
+
+										// Creating a custom 404 page for error showing
+
+	i. create a default .blade.php page with 404 name as 404.blade.php.
+
+
+									// Installing packages for form ( laravelCollective/html )
+
+
+											// installing new packages 
+
+	26. For installing new package 
+		i.  go to google for getting package repository 
+		ii. composer require packageName version(optional)
+										// Request class for Form validation 
+	27. Making a request class for validating user inputs of a form
+		i. php artisan make:request NameOfClass
+
+
+										// Working With Dates ( Corbon )
+
+	
+	// For more :-	Go to two following links
+
+	Note :- We just have to import Carbon class like below on top and work
+
+		=>	use Carbon\Carbon; 
+	
+	// https://scotch.io/tutorials/easier-datetime-in-laravel-and-php-with-carbon
+
+	// http://carbon.nesbot.com/docs/#api-addsub
+
+
+										// Working With Accessors And Mutators 
+
+
+	Accessors :- // Accessors means that we want to manipulate some data coming from database before showing it
+
+			For creating an accessor go to that particular model :- For example For a User model we want to say when someone access his name then "Mr." should be attached with his/her name
+
+			then we have to code following lines in That particular model...
+
+			public function getNameAttribute($value)
+    			{
+        			return "Mr." . $value;
+    			}
+	Note :- Just type accessor in the model and press tab in sublime text 3 ( must have installed Laravel related extensions before ) it will generate accessor for me
+
+	Note :- But keep in mind Name of accessor must follow camel notation. Means first letter small then all letters capital . like getNameOfPersonAttribute()
+
+
+
+	Mutators :- // Mutators means that when we want to manipulate data before saving it to the database
+
+			For creating an mutator go to that particular model :- For example For a User model we want that when someone save Name of user then "Mr." must be attached to his or 
+			her name.
+			 
+			public function setNameAttribute($value)
+    			{
+        			$this->attributes['Name'] = "Mr." . $value;
+    			}		
+
+	Note :- Just type mutator in the model and press tab in sublime text 3 ( must have installed Laravel related extensions before ) it will generate mutator for me
+
+	Note :- But keep in mind Name of mutator must follow camel notation. Means first letter small then all letters capital . like setNameOfPersonAttribute()
+
+
+
+										getting Latest Data entered in the Table 
+	
+
+	For example in case of Posts :- We want to get latest posts means latest ones on top and oldest ones on buttom then use below function 
+
+							$posts = Post::orderBy('id','decs')->get();
+
+					    		foreach ($posts as $post) {
+        								
+								echo $post->title . "<br>";
+    							
+							}
+										
+											getting Oldest Posts
+
+	 
+							$posts = Post::orderBy('id','asc')->get();
+
+    							foreach ($posts as $post) {
+        							echo $post->title ."<br>";
+    							}
+
+
+											working with Query Scope
+
+	Let suppose we have a long query like below 
+
+							orderBy('id','asc')->get(); ( in above example ) 
+
+	And we want to save this long Query into a function and just call that function and that function return this long query 								
+
+	So to save it in a function go to Post model and Make A queryscope like below 
+
+
+							public static function scopeLatestPosts($query)
+    							{
+        							return $query->orderBy('id','asc')->get();
+    							}
+
+							Now we can use like 		
+						
+							$posts = Post::LatestPosts();
+
+    							foreach ($posts as $post) {
+        							echo $post->title ."<br>";
+    							}
+
+
+											// Laravel login functionality 
+	
+	28. For complete login system in laravel 
+		i. php artisan make:auth
+
+					
+	ii. We can also get information of logged in users like below 
+
+		=> $user = Auth::user();
+
+		=> echo $user->name;
+
+		// If we want a user to log in 
+
+			if(Auth::attempt(['name'=>'Usama', 'email'=> 'usa@gmail.com' , 'password' => 'AnyPassword' ])){
+				return "logged in";
+
+				Or 
+				
+				// intended means where user was intended to go but can't because he/she was not logged in
+				return redirect()->intended('/admin');				
+			}
+
+		// If we want to log out then 
+
+			Auth::logout();
+
+											// Dealing With Middlewares 										
+
+	Steps to follow for implementing a middleware
+
+	i. For creating a middleware 
+		i. php artisan make:middleware NameOfRoute ( RoleMiddleware )
+
+	
+	ii. Register that middleware
+
+		=>	go to kernal.php and in the $routeMiddleware 
+		=>	register it like below 
+
+			'role' => \App\Http\Middleware\RoleMiddleware::class,
+
+		=>	 then on the route add it like below 
+
+			Route::get('/checkingMiddleware', ['middleware'=> 'role' ,function() {
+			}]);
+
+		=>	we can also add multiple Middlewares like below
+
+			Route::get('/checkingMiddleware', ['middleware'=> ['role','auth'] ,function() {
+			}]);
+			
+
+		=>	and in the Middleware itself add your logic in the handle method like below
+
+			public function handle($request, Closure $next)
+    			{
+        			if(Auth::User()->name == 'Usama')
+            			{
+                			// return redirect()->intended('/home');
+                			Auth::logout();
+            			}
+            			else
+            			{
+                			return redirect()->back();
+            			}
+        			return $next($request);
+    			}
+
+			// According to this Example Only Users that have Name "Usama" will go into the application others will be logout
+
+			Or Let suppose we want to go to some route if and only if we user has admin roles then 
+
+
+			public function handle($request, Closure $next)
+    			{
+				$roles = Auth::User()->roles;
+        			$flage = false;
+        			foreach ($roles as $role) {
+        	    			if($role->name == "admin"){
+                				$flage = true;
+            				}
+        			}
+	
+ 			        if($flage){
+           		 		return redirect('/home');
+        			}
+        			else
+        			{
+            				Auth::logout();
+            				return redirect('home');
+        			}
+			}
+
+	Important Note :-	// First Relationship must be setup between roles and users ( it could be many to many ( Explained above ) )
+
+	
+		*** Middleware Real Use with Controller ***			
+
+		
+		For example let take above example in which we want to validate user's role if he is Admin then allow him to do enter in a particular Route only
+
+		Steps to Follow are below... 
+
+		i.	Make a Middleware using Following Command 
+	
+				=> php artisan make:middleware IsAdmin 
+
+		ii.	Register it as i have mentioned above
+
+
+		iii.	Then for that example we have to make isAdmin function in the User Model like below 
+
+public function isAdmin(){
+        if($roles = $this->roles)
+        {
+            $flag = false;
+            foreach ($roles as $role) {
+                if($role->name == 'admin'){
+                    $flag = true;
+                }
+            }
+            if($flag == true){
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+}
+
+		iv.	Then in the IsAdmin Middleware right following line in the handle function 
+
+$user = Auth::user();
+        if(!$user->isAdmin()){
+            return redirect()->intended('/');
+}
+
+// it says if user is not admin then push him on the home page not let him go to admin page
+
+
+		v.	Then Make A Controller like below 
+
+				=> php artisan make:controller AdminController
+
+
+		vi.	Then write following two functions something like below 
+
+			public function __construct()
+    			{
+        			$this->middleware('IsAdmin');
+    			}
+    
+			public function index()
+    			{
+        			echo "You Are seeing this page because you are an Admin";
+    			}			
+
+
+		vii.	Then define your something like below
+
+			Route::get('/admin','AdminController@index');
+
+
+		Result :- Now only admin users can do into that route			
+
+
+
+						// For setting our site off ( means we want to change something and we want to stop our site for some time )	
+	
+	30. For down our site 
+		i. php artisan down 
+	
+	31. For reseting it on ( again do it online )  
+		i. php artisan up
+
+
+											  Seeders In Laravel 
+
+	Seeders Are used to generate Dummy Data into the tables for test 
+
+	i. To generate Seeders 
+
+			 php artisan make:seeder NameOfSeeder
+
+	get a tutorial Online 
+
+											Resource API in Laravel 
+
+	for making an resource :- 
+
+			php artisan make:resource User
+
+	for making an resource collection :-
+
+			php artisan make:resource UserCollection
+
+
+
+
+
+										// Dealing with sessions to show messages
+
+	// First Create a session 
+		i.	Session::flash('NameOfSessionVariable','value to store');
+		
+		Or 
+
+		ii.	Session(['NameOfSessionVariable'=>'ValueToStore']);
+
+
+	// Getting All Sessions setted for an application 
+
+		iii.	return $request->session()->all();
+
+	// Getting a particular Session
+
+		iv.	return $request->session()->get('Name');
+
+	// Getting a particular Session ( Another Way )
+
+		v.	return session('Name');	 		
+
+	// Deleting a particular Session 
+
+		vi.	$request->session()->forget('Name');
+
+	// Deleting All Sessions 
+
+		v.	$request->session()->flash();
+
+	// Flashing All Sessions
+
+		Note :-	Flashing means this session will be in memory only for one request means if we reload or navigate to another page once then this will be available but on twice it will be gone 
+			// Means Flashed Sessions are accessible only for one request
+
+
+		vi.	$request->session()->flash('message', 'This is a message');
+
+	// And Many More functions in the Laravel Documentation 
+
+
+
+
+
+											// Making middlewares 
+
+	32. For creating a middleware 
+		i. php artisan make:middleware NameOfTheMiddleware
+	    
+	    // Consult Middleware topic from Edwin topic 
+
+											// Mails Using Mailgun 
+	33. For installing mailgun api in our laravel application 
+		i. composer require guzzlehttp/guzzle
+
+	*** For Setting Up MailGun Email service in our Application ***
+
+	1. First Go to mailgun site and login or sign up 
+
+	2. Then configure your project for mailgun like below 
+
+		=> go to .env file and put following in the place of following 
+
+		in place of :- 
+
+				MAIL_DRIVER=smtp
+				MAIL_HOST=smtp.mailtrap.io
+				MAIL_PORT=2525
+				MAIL_USERNAME=null
+				MAIL_PASSWORD=null
+				MAIL_ENCRYPTION=null
+
+		replace this 
+
+				MAIL_DRIVER=mailgun	
+				MAILGUN_DOMAIN= 
+				MAILGUN_SECRET=
+
+		For MAILGUN_DOMAIN go to mailgun site and click on the mailgun icon this will take us to the root of the site 
+		And Copy one of the Domain name from your newly created domains Or select custom provided domain from mailgun
+	
+		And from right side panel their is a block of API Keys. Then copy Private API Key and paste in the MAILGUN_SECRET above 
+
+			
+		=> then go to mail.php file in the config folder and change from mail 
+
+			=>	'from' => ['address' => 'usamafarooq2007@gmail.com','name'=>'Usama Mughal'],
+		
+		=> then go to Route Or any other place where we want to send Email and paste following code
+
+			$data = [
+				'title' => 'Heloow this is title',
+				'content' => 'This is content'
+			];
+
+			Mail::send('emails.test', $data , function($message){
+				$message->to('usamamughal2007@gmail.com' , 'Usama Mughal')->subject('Helow Student How are you ? ');
+			});
+
+		=>	In the test.blade.php file we can get title and content values back like 
+
+
+	3. Then run following command if we have't done before 
+		
+		=>	composer require guzzlehttp/guzzle
+
+	4. Then go to vendor\guzzlehttp\guzzle\src\Client.php
+
+		=> go into the configureDefaults 
+												// Git 
+
+	34. To see all commands of git 
+		i. git
+ 
+	35. For going to some directory 
+		i. cd c:  
+		ii. cd xampp/htdocs  
+		// with upper two line control will goes to htdocs folder
+ 
+	36. For listing out files in the current folder 
+		i. ls
+
+	37. For clear whole commad screan 
+		i. clear
+	
+	// In the example i have used a folder ( learning-git ) inside c drive
+	first we will go to this folder 
+	
+	i.       cd c: 
+	ii.      cd learning-git/
+	// Now we are in the learning-git directory
+	
+	// First of all we have to initialize git for version control in case of dealing with files tracking 
+	
+	38. To initialize git 
+		i. git init
+        39  -->	// To Terminate git 
+		i. rm -rf .git 
+	
+	39. To add a file in the current directory
+		i. touch fileName_WithExtension
+ 	
+	40. To check the status of our project 
+		i. git status
+	
+	41. we can track a file after adding it to git So to add a file to git 
+		i. git add fileName_WithExtension
+	// Now when whenever we change this file git will track it 
+
+// Important Point:- 
+	
+	// Once we change something after all the change we have done we should commit it 
+	// this commit state and time will be saved with specific id 
+	// later on in case of some problem we can get this state and time of project back.
+	// Means for example after sometime we have done something wrong with our project and we don't 
+	// find a way to solve problem and we may have to rewrite everything 
+	// then we may have a stable version back which was running perfectly and we can carry on our project 
+	// from right there. 
+	// So after changing we should commit the change. with that change we will get an id 
+	// We can go back to respective state of our project with the help of id
+	// This id will be get when we run "git log" command to get the commit info
+	
+	42. To commit the change
+		i. git commit -m "Message to remmember that change let suppose 'Feature 1'"
+	
+	43. We can also see all our commits OR in other words we can also see all the Versions of upgrades of our project 
+		i. git log
+
+	44. We can reset or go back to previous version means the total state of our project will be at some previous version 
+		// There are two ways to do this
+		// Soft and hard 
+		// With Soft we can go back 
+		// But with hard we can not go back , All we have is the new version on which we have shifted 
+	     // For hard reset 
+		i. git reset --hard idOfDesiredPrevious version 
+		// we can get the id of the previous version by going to "git log" and get the id of desired previous version
+	     // For soft reset 
+		i. git reset idOfDesiredPrevious version
+	45. Delete any file 
+		i. rm -rf fileNameWithExtension
+
+										
+										// Branches in Git 
+
+
+	// We may have duplicate files of the same project in git and change in any one of them , could't effect other 
+	// these duplicate files are called branches in Git . We can test something in one file and apply to the master ( main ) branch.
+	// means for example we have 2 commit versions in first branch and we move to another branch and commit another change 
+	// but still in first branch only 2 commit versions are present 
+	// Means one branch does't effect other 
+	46. To create a new branch and shifting control to new branch 
+		i. git checkout -b NameOfBranch
+
+	47. How we can switch from one branch to another 
+		i. git checkout NameOfTheBranchToSwitch
+
+	48. We can also merge two or more branches together 
+		// Means first make changes in the test branch and if it works fine then merge it to 
+		// master branch. and we will have a new upgraded version 
+		// Means new commits that we have made in the test branches wil be added to master branch
+		// We have Master branch as default But we can make different branches as many as we need
+		// When we make new branches duplicate files are automatically copied into it 
+		// Means for example we have created new branch and in the master branch there was index.php file then 
+		// then in the new branch this index.php file also exist and all the commits of master branch can also be accessed
+		// or copied into the new created branch.
+		// But changes to this new created branch will not effect master branch.
+
+		i. git merge BranchWithWhichWeWantToMergeCurrentBranch
+	
+	49. We can also delete a branch 
+		i. git branch -d NameOfTheBranch
+	
+	50. For going back to privious directory 
+		i. cd -
+
+									
+										Making artisan Commands
+
+
+	i. First make a command like below 
+
+		=> php artisan make:command ConsoleTest
+
+		=> Now go to app->console->Commands->ConsoleTest.php
+
+		=> Now make a name for command in $signature like below 
+
+			=>	protected $signature = 'consoletest';
+		
+		=> Then register your command in kernal.php in $commands array like below 
+
+			=>	Commands\ConsoleTest::class,	
+
+
+		=> then what should be happend after running this command will be handled in handle function like below
+
+			=> public function handle()
+    			   {
+        			$this->info("This command is working fine");
+    			   }
+		=> We can also ask Question and ask for choices like below 
+
+			=> $name = $this->ask('What is your Name ?');
+        		   $language = $this->choice('What is your preffered Language ? ' , [
+            			'Php',
+            			'Ruby',
+            			'Python',
+        		   ]);
+        		   $this->line("Your Name is {$name} and Language is {$language}");
+
+		Note:- We can also add additional flags and custom logic in $handle function and add progress bars etc... See Documentation for full overview
+
+
+								       Sending Notifications in Different Langauges
+	
+		Note :- We are going to send email notifications to users in different languages
+
+		For that first create a new notification like below 
+
+			=> php artisan make:notification TestNotification
+
+			=> Now go to app->Notifications->TestNotification and see that a dummy email is created already
+
+			=> Now go to .env file and set your mailtrap credentials like below ( go to mailtrap sign in with google and see your username and password )
+	
+				=>	MAIL_DRIVER=smtp
+					MAIL_HOST=smtp.mailtrap.io
+					MAIL_PORT=2525
+					MAIL_USERNAME=b3d24c8c3d2d7f
+					MAIL_PASSWORD=f612c45214bc0c
+					MAIL_ENCRYPTION=tls
+
+			=> For sending user emails we should also have to make authentication system through Laravel Auth like below 
+
+				=> php artisan make:auth
+
+			=> Now go to web.php to set your route to test email notification and create route like below
+
+				=> Route::get('/sendEmailNotification',function(){
+					auth()->user()->notify(new TestNotification);
+				   });
+
+			=> Now we have an email notification in mailtrap
+
+			=> But the main point is we want to send email notification in different langauges like hindi or purshian
+
+			=> First go to google translator and type your email message their to convert it into another langauge and then 
+
+			=> Now go to resources->lang->en and make a new file ( in this example called notification.php )
+
+			=> Now go to notification.php and make a new array having keywords used in our application for a specific string like below 
+
+				=> <?php 
+				
+					return [
+					
+						'title' => 'The introduction to the notification.'
+					]
+
+			=> Now we have to create a new folder in resources->lang which specify a particular language
+
+			=> And then make the same file we have created above ( for this example notification.php  ) in this folder as well with the same name
+
+			   Means there should be two files with the same , one must be in resources->lang->en->notification.php and 
+			   other should be in resources->lang->newCreatedLanguageFolder->notification.php
+
+			=> but in the language specific folder use same code and same keywords but different values like below for above notifications.php file
+
+				=> <?php 
+				
+					return [
+					
+						'title' => 'Urdu men yi wala message google se copy kren'
+					]				
+
+			=> Now we want to use this feature so go to the TestNotification class and go into the message and use it like below 
+
+				=> return (new MailMessage)
+                    			->line(__('notification.title'))
+                    			->action('Notification Action', url('/'))
+                    			->line('Thank you for using our application!');
+		
+			=> Now go to web.php to change my preffered language in route where we setted before 
+
+				=> Route::get('/sendEmailNotification',function(){
+					auth()->user()->notify((new TestNotification)->locale('urdu'));
+				   });
+
+			=> Now check your mailtrap to see new email notification which is now in urdu language
+
+
+
+
+											// GitHub 
+	
+	51. For transfering files to github 
+		i.    grab the SSH url from repository 
+		ii.   and run following command
+			// git clone SSH_URL
+		// with above procedure we will be able to get a clone of online GitHub repository in our current local Git repository 
+		// in simple words we make a connection between our local repository and remote repository ( GitHub Online repository )
+		
+		iii.  after performing above task we have a folder in the local repository have the same as we have in the github of repository
+		      Means for example we have a repository called ( FirstBeginner ) in the Github . when we perform clone operation 
+		      we will get a copy of that repository in our local directory in which our git control currently is.
+		
+		iv.   Now for creating files or placing files to online github repository we need to shift git control 
+	              to newly created clone directory of Github repository. 
+		      Means check the files in the current directory by 
+			
+		// Now add these files into local repository like below 
+			// git add .
+
+		{
+
+			1. git commit -m "Name of commit"
+		
+			2. git status 
+		
+			3. Now first add a remote in the online repository 
+				git remote add origin SSH_URL
+		
+			4. Now push it to the online repository 
+				git push origin master		
+
+	
+		}
+
+
+		      we will find a directory have same name as online GitHub repository. shift control to this 
+		      directory by...
+			// cd NameOfDirectory/
+		      
+		      Now perform all operations to add , delete , commit files same as we are doing before 
+		// For example:- to add a simple post.php file in the online GitHub repository we should do following 
+		// operations 
+			i.     touch post.php 
+		
+		// Now check weather the file is added or not by 
+			ii.    git status
+		
+		// we can see, it says untracked file, Means there is a file that but not able to tracked 
+		// Means we have not added it and commited it
+		// So first add it
+			iii.   git add post.php
+		// To add all the files of the current folder 
+			iv. git add .
+			
+
+		// Now make a commit
+			iv.    git commit -m "Message to show for this release or commit"
+		
+		// Now we can see that the file successfully added in the local folder but not have been uploaded to 
+		// remote ( GitHub repository ) 
+		// So to add it to GitHub repository 
+			v. git push origin "branchName" (if there is no branches yet , it will be master ) as below
+				i.e  git push origin master 
+	
+	52. To open and view a file in the git 
+		i. nano FileNameWithExtension
+	
+	53. Pulling or downloading changes and files and data from Github to local repository
+		i. git pull
+
+	54. Let suppose we want to contribute to some other's project 
+
+		i.    Go to his profile and select his repository by searching . For ease go to Advance search ( first search in the up box then it will let u go into the advanced search )
+		ii.   Then Click on the Fork button, It will create the same repository into your github account. Now you can clone it into the local machine by following following steps
+
+			i.	copy SSH address from your repository 
+
+			ii.	and get your git control into the directory where we want to clone it
+
+			iii.	and run following command
+
+					=> git clone https://github.com/Usama123456789/test.git ( SSH Address of that repository )
+
+			iv.	Now we will get the directory having same name as it has in the online github account 
+
+			v.	now get your control into that directory 
+
+			vi.	And make changes as much as you want
+
+			vii.	let suppose i just create a new file named category.php
+			
+					=> touch category.php
+
+			vi.	Then i have to add it like below
+
+					=> git add . 
+
+			vii.	then make commit as well 
+
+					=> git commit -m "Category Feature added"
+
+			viii.	then push it into the online repository like below
+
+					=> git push origin master (branch name)
+
+			ix.	Go to online repository and see the change has been done				
+
+			x.	We can see we were working separatly from his/her repository. we just cloned his/her repository and make changes into it 
+
+			xi.	Now let suppose we want to tell him that i have made some into your project do you want to adopt them ? Or do you want to add into your project/repository ? 
+
+			xii.	For that we have to make a pull request from our account ( From Button above stated as New pull request )
+
+			xiii.	and give short discription and create pull request
+
+			xiv.	Now he/she ( To which repository we were contributing ) will get an indication in the Pull Request Tab. when he/she will open it. he/she will review it and 
+				if he/she want to merge it it will merge it 
+		
+
+
+
+						<*****  Voyager Admin Tamplete  *****>
+
+					Laravel 5.4 / 5.5 
+						i. composer require tcg/voyager
+					Laravel 5.6.*
+						i.   composer require tcg/voyager:dev-1.x-dev
+					Without Dummy Data :- 
+						ii.  php artisan voyager:install
+					With Dummy Data :- 
+						ii.  php artisan voyager:install --with-dummy
+
+					problems may occur :- 
+						specified key is too long 1071 ( Something like that )
+					Solution :- 
+						i.   Make Database with utf8mb4 collaction
+						ii.  Add following line in AppServiceProvider's boot() function
+							Schema::defaultStringLength(191);
+						
+						iii. Migrate again
+
+
+// Updating composer 
+	
+	54. To Update composer 
+		i. composer self-update
+
+
+// Laravel Mix To deal with styles and script files
+
+	i.  First install nodejs 
+	ii. then npm install 
+	
+	// Using this we are able to make a single compiled file of scripts and styles   
+	
+	56. For compiling scripts and style files from resources->assets to public
+		i. npm run dev
+		
+	// before compiling we must have all css and js files in the resources->assets folder 	
+	// after running above query on the terminal or git we will compile our script and css file into 
+	// one compiled file for all 
+
+	57. For compiling from .scss file 
+		i. npm run watch 
+
+	58. For update NPM to new version 
+		i. npm i -g npm
+// AdminLTE 
+	
+	i. see video laravel beginner tutotials by Edwin diaz -> At last topic
+
+// Bootstrap 
+
+	58. updating bootstrap in laravel from bootstrap 3 to bootstrap 4
+		i. npm install bootstrap@4.0.0-beta --save-dev
+
+																	
+
+											 Laravel Socialite
+
+	i.   Best resource to learn login with github 
+							=> https://www.youtube.com/watch?v=4jd0WPwUvvE&index=0&list=PLylMDDjFIp1Ay6LqXVQHlfuUWb6aU0cDC
+
+	ii.  In Laravel Projects -> socialite -> it is configure with shared hosting ( server62 ). I have worked in production mode means on the remote server and downloaded, So be carefull if 
+	     want it to use in localhost 
+
+        iii. In order to run it in localhost you have to make following changes 
+
+						=> check .env file's ( below things to check in .env file )
+						=> check database name and password etc...
+						=> check GITHUB_CLIENT_ID etc... 
+			 
+
+
+												Laravel Mix
+
+	Note :- What Laravel Mix Does for us ? 
+	
+	Ans :- 	It compiles all the css and javaScript files into one compiled css and javaScript file. Means all the css files in our project are combined into one compiled css file 
+		and all the javaScript files of our project are combined into one compiled javaScript file. Which makes our project to run faster much more than simple configuration provided by default by Laravel.
+
+	i. 	First of all you must have installed npm and nodejs in your computer to get started for Laravel Mix
+
+	ii.	run following command 
+	
+				=> npm install
+
+				Note.	Know all node_modules have been added to your project 
+				you can see in you resources folder within assets folder you have js and saas folders for JavaScript and CSS
+
+	iii.	Now Compile all files to convert them into one file for css and one file of js by running following command
+
+				=> npm run dev
+
+				Note:- Now we can see that we have one compiled "App.css" and "App.js" files in the public directory 
+				Note:- Before running Laravel Mix these files were there but was in raw form means they were not compiled at all and not have all css and js files into one file 
+				       as we have now
+
+		Note:-	Now above we all set up  	
+
+	iv.	Now let suppose we want to host our site into the production mode then we can convert our css and js files into minified versions. Means know all the code will be converted into 
+		one line and files size will be reduced a lot. So to do that run following command
+
+				=> npm run production
+
+	v.	now let suppose i want it back to the normal view and see all the code again then run following command
+	
+				=> npm run watch
+
+
+	vi.	Now let suppose we want to add styles into our site we just have to add new styles into the the pre-compiled scss file which is in the resources->assets->sass->app.scss
+		And each time we change this file means when adding new style it will be compiled automatically when we save this file. and compiled css will be able to use from 
+		public->css->app.css 
+
+	vii.	For linking compiled app.css file we can use below link tag in the views 
+
+				=> <link rel="stylesheet" href="/css/app.css">
+
+	Note :- For more see the Example in the Laravel Projects Named as "LaravelMix"
+
+							
+											Using JavaScript in Laravel
+
+
+	i.	First we have to install Laravel Mix ( installing laravel mix is also explain in this document )
+
+	ii.	Then just write your scripts in "resources/assets/js/app.js" 
+
+	iii. 	Then run 
+				=>	npm run watch 	
+	
+	iv. 	Then we have to include this script tag into the app.blade.php or any welcoming page ( in the bottom of page ( body ) ) like below
+
+				=>	<script src="{{ asset('js/app.js') }}"></script>
+
+											Using CSS in Laravel 
+
+	i.	First we have to install laravel Mix then go to "resources/assets/sass/app.scss" and write tour styles 
+								
+
+											Broadcasting In Laravel 
+
+	 Note:- Broadcasting is a system by which we get real time app by using pushers and channels. Means we get real time notifications , messages etc without refreshing the page. 
+		Like in facebook and other social media applications we get notifications without refreshing the page.
+
+	i.	First we have to install pusher by running following command
+
+			=> composer require pusher/pusher-php-server "~3.0"
+
+	ii.	Now we have to login into pusher.com site and create a new app.
+
+	iii.	When our app is created in pusher.com then go to "App Keys" tab and get these keys and set into .env file like below
+
+				set app_key and secret from that pusher.com window and paste into .env file in place of PUSHER_APP_ID, PUSHER_APP_KEY and PUSHER_APP_SECRET and PUSHER_APP_CLUSTER
+
+	iv.	then also change BROADCAST_DRIVER=log to BROADCAST_DRIVER=pusher in .env file.
+
+
+	v.	Now copy following lines and paste into config\broadcasting's (options part)
+
+				'cluster' => 'ap2',
+				'encrypted' => true
+
+	vi.	Now make an event like we created below
+
+				=> php artisan make:event NewEvent
+
+	v.	Then to make an event able to broadcasting
+
+				=> implementing this event with ShouldBroadcast
+
+	vi.	Now below the event we have broadcastOn() method which says on which channel this message or notification or news is going to travel. 
+
+		we have multiple channels at the same time. A user sends a message to a channel and other users which are on the same channel will get this message. others users will not get that message 
+
+		Only the users having same channels can access to the messages or news.
+
+		So now we have to make a channel and let say we named it as "testChannel"
+
+	vii.	Go to config/app file and go down to the providers array and uncomment BroadcastServiceProvider
+
+
+	viii.	Then for understanding we make a route for sending message like below 
+
+			Route::get('event', function () {
+    				event(new NewEvent('New message is sended'));
+			});
+
+	ix.	Then go to this route and go to the pusher.com site and goto our app and go to Debug Console we will see we are getting notification.
+
+	x.	Now we can listen to this notification by adding Laravel Echo 
+
+	xi.	For understanding listeners with Laravel Echo make a route	
+
+			Route::get('listen', function () {
+   	 			return view('listenBroadcast');
+			});
+
+	x.	make a new view listenBroadcast.blade.php
+
+	xi.	Now install Laravel Echo in our project by running following command
+
+			=>	npm install --save laravel-echo pusher-js
+
+	xii.	Now go to "resources/assets/js/bootstrap.js" and uncomment last line where we have 
+
+			import Echo from 'laravel-echo'
+
+			window.Pusher = require('pusher-js');
+
+			window.Echo = new Echo({
+    					broadcaster: 'pusher',
+    					key: process.env.MIX_PUSHER_APP_KEY,
+    					cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    					encrypted: true
+			});		
+
+	xiii.	Now go to our view and install Laravel Mix ( mtlb ab sari Laravel Mix k steps kerne hen mtlb pehle npm install command phir npm run dev command )
+
+	xiv.	Now go to "resources/assets/js/app.js" and in the vue component below having el:'#app' create a new function called created()
+		this function will be called when this component is created means on start of the page according to this example
+
+		So below we are going to listen Above event that was created through Echo. to listen with Echo write following code in created function of vue. 
+		we used this following code to listen. But we pasted it into created() function becasuse we want whenever our app is loaded this Echo start Listening for events
+
+				// For Private Channels
+	
+				Echo.private('testChannel')
+            			    .listen('NewEvent',(e)=>{
+                			console.log(e);
+            			});
+
+				// For Public Channels
+				Echo.channel('testChannel')
+            			    .listen('NewEvent',(e)=>{
+                			console.log(e);
+            			});
+
+
+
+	xv. 	We must add CSRF_Protection field inside our head tag in order to run broadcasting. without that its not possible
+	    	So first add following CSRF_protection meta tag in the view where we are going to listen the event through Echo
+
+			=>	<meta name="csrf-token" content="{{ csrf_token() }}">
+	
+	xvi.	here we are actually disscussing private channels. so for private channels a user must be logged in in order to listen the event. So you must have implemented auth.
+
+			=> php artisan make:auth
+		
+		Note:-  Our database must be attached and then run php artisan migrate command 
+
+	xvii.	Now for private channels we also have to make a broadcast channel route function that give access to only users that are logged in to access this channels 
+		Other users that are not logged in will not be able to go inside that channel because this function will return false. if a user is logged in then this function 
+		will return true.
+			
+			// For Private Channels
+			Broadcast::channel('testChannel', function ($user, $id) {
+    				return true;
+			});		
+
+
+ 
+	
+												Using React with laravel 
+
+	=> By default laravel support Vue js but we want to add React instead of React js using following command
+
+		=> php artisan preset react
+
+	=> Then install npm and run laravel Mix 
+
+		=> npm install && npm run dev
+
+	=> Then run following command
+
+		=> npm run watch
+
+	=> Now look in the resources->assets->js->components 
+
+		=> there we have an example components
+
+	=> look at the bottom of Example.js ( Example Component )
+
+		=> if (document.getElementById('example')) {
+	    		ReactDOM.render(<Example />, document.getElementById('example'));
+	   	}
+		=> above statement states that in the file in which we will use that component if have any example id then inside that tag render function of this component will be pasted
+
+	=> Using this component in the HTML Or Blade.html files 
+
+		=> just add app.js script ( We must have Laravel Mix before up and running )
+
+			<script src="js/app.js"></script>
+
+	=> Adding CSS of that component ( infect of all component )
+	
+		=> <link rel="stylesheet" href="css/app.css" type="text/css">
+
+	=> Each component must be registered in " resources->assets->js->app.js "
+
+
+												Using Vue Js With Laravel 
+
+	Tutorials link :- https://www.youtube.com/watch?v=5SvkoDIpaIA&list=PL9fcHFJHtFaapJ90VEtHvbqGvDniKkuRT
+
+	Note:- Below everything is by default for Vue js we don't have to do anything below 
+	
+		By default Vue js is setup already but we have to do some things to get it started. For changing the dependencies we are using in our app like wheather we are using 
+	
+		react or vue or bootstrap or other things we have to run following command
+
+			i.	First step if we want to add vue to our project just enter following command and see "package.json" file we will see vue dependency will be added
+
+					=> php artisan preset vue
+	
+			ii.	Now for enabling React js instead of vue we can run following command
+
+					=> php artisan preset react
+
+			iii.	For setting bootstrap we can run following commands 
+
+					=> php artisan preset bootstrap
+					
+	Start From here because above steps are only for demonstration purpose.
+
+		1.	then run following command 
+
+				=> npm install
+
+		2.	then run following command npm run dev
+
+	Then install Vue router by running following command
+				
+			=> npm install vue-router --save-dev
+
+	Then use router-link and router-view tags to show components as we want For more go to Example " VueWithLaravel " for more understanding
+
+
+										Using Bulma instead of Bootstrap in Laravel
+					
+	i.	First install following package				
+
+			=> npm install bulma --save
+
+		Note :- You must have installed npm into your project to run above command
+			
+			=> npm install		
+
+	ii.	Then go to resources->assets->sass->app.scss and remove bootstrap import 
+	
+		And paste following import in place of bootstrap import.
+
+			=> @import '~bulma/bulma';
+
+	iii.    Then run your laravel mix
+
+			=> npm run watch
+
+	iv.     Then go to resources->assets->js->bootstrap.js and in the try block we have " require('bootstrap'); " . Now just remove that line
+
+
+										Using GitHub For our new Laravel installation
+
+	i.	Create a new repository in our github account. when our repository created success screen shows it is saying two things
+		
+			i.	or create a new repository on the command line
+			ii.	or push an existing repository from the command line
+
+		we are going to use second option. just copy first command in that second option
+
+	2.	first we have to initialize git on our local project for that get your control to your project and run following command
+			
+			=> git init
+
+	3.	Now paste the command and run, that were copied in step 2. for example for current scenario 
+			
+			=> git remote add origin https://github.com/Usama125/LaravelWithVue.git 	
+	
+	4.	Now run following command to check the status of files that have not been commited or commited ? 
+
+			=> git status	
+
+	5.	Now run following command to add all the changes which have been done.
+
+			=> git add .
+	
+	6.	Now run following command to commit the changes and give them a flage or name 
+
+			=> git commit -m "Initial Commit"	
+
+	7.	Now from the 2nd step we were having another line below the line we have used in step 3 then that command. for current scenario that is...
+		
+			=> git push -u origin master
+
+	8.	Then we might have to login to our github account use following credentials to login to my Github account.
+
+			github  AND bitbucket Logins-> 
+                  	username :- Usama125 
+                  	email :- usamafarooq2007@gmail.com
+                  	password :- Usama123	
+
+										Using Font Awesome icons in our App
+
+	1.	Install by running following command
+	
+			=> npm install font-awesome
+
+	2.	Now add it to our project
+
+			=> go to resources->asset->sass->app.scss and import font awesome icon package from node_package
+			
+				Note:- You must have installed npm before that ( by running :- npm install )
+
+			=> @import '~font-awesome/scss/font-awesome';
+		   									  Laravel Events
+
+	Note :- let suppose we want to do something when something happend for example we say whenever a new user register to our application we send him 
+		a welcome mail and send him a varification code then we have to follow following steps
+
+	Note :- There is always an Event which is triggered and there are one or more listners who listen to this event.
+
+	i.	First make an event for that go to "App/Providers/EventServiceProvider".
+	
+		Now in the $listen array we will add an event like we added UserRegistration Event below
+
+			protected $listen = [
+        					'App\Events\UserRegistration' => [
+            						'App\Listeners\EventListener',
+        					],
+				         	// 'App\Events\AnyOtherIfWeWant' => [
+            					// 	'App\Listeners\EventListener',
+        					// ],
+    					    ];
+
+		Now we assign listens to an event that will listen whenever the event triggered like below ( in the same code above )
+
+			protected $listen = [
+        					'App\Events\UserRegistration' => [
+            						'App\Listeners\SendWelcomeMail',
+							'App\Listeners\SendVarificationCode'
+        					],
+				         	// 'App\Events\AnyOtherIfWeWant' => [
+            					// 	'App\Listeners\EventListener',
+        					// ],
+    					    ];
+	
+		Note :- Above we have two listeners for one event means both will be called when an event is triggered
+
+
+	ii.	Now run following command to generate events and Listeners
+
+			=>	php artisan event:generate
+
+		
+		Note :- Now our Events and Listeners folders are generated in the App directory 
+
+
+	iii.	Now inside the listeners go to the handle method and do whatever we want to do like for that example we just logging the message to check wheather our events and listeners 
+		works correctly or not ? 
+
+			Log::info('SendingVarificationCode',['user'=>$event->user]);
+
+	iv.	then call this event where we want to call like below	
+
+			event(new UserRegistration($user));
+
+		Note:- Each time we send specific information to an event and event handle this information through listner to do the task. So that we have sended $user to make things happen on the
+		       current loged in user.
+
+		       For more see the example in the sample projects called "events"
+
+
+										    Multiple Authentication System
+
+		=> Multiple authentication system supports multiple users to login and sign up like admins , subscribers , regular users etc...
+
+		=> Git repository for that particular package is Below
+
+			=>	https://github.com/s-sarthak/laravel-multiauth
+
+		=> Just Run following command to set it up 
+
+			=> composer require bitfumes/laravel-multiauth			
+
+		=> Then for going to the admin side just go to following route 
+
+			=> pathToPublicDirectory/admin 
+
+			i.e localhost/projectName/public/admin
+
+		=> There one thing need to remmember, Admins are only added by a super admin. and this super admin will created by running following command
+
+			=> php artisan multiauth:seed --role=super
+
+		=> Now we have all basic multi auth system up and running
+
+		=> Now let suppose we want to change something in this auth system like suppose we want to add another field like gender , roll no etc... then first 
+
+		   we have to get our auth packaged migrations into our project's migrations to make changes in the table for login.
+
+		   means before that migrations like for admin login and athentication and roles was dont have any migrations in the projects root folder in database->migrations
+
+		   instead these are present in the package we installed called Multiple Authentication System. we have to send them into our project to do this we have to run 
+
+		   following command.
+
+			=> php artisan vendor:publish --tag="multiauth:migrations"
+
+		=> Everything is hidden in this package means views , migrations etc we have to public that into our project as above we have published migrations 
+
+		=> Now let suppose we want to customise admin authentication means we want to have a phone column as well 
+
+			=> first add it in the admin migration like below 
+
+				=> $table->bigInteger('phone');
+
+		=> Now we also have to publish factories to create dumy super user having phone field like below
+
+				=> php artisan vendor:publish --tag="multiauth:factories"
+
+		=> Then add phone column to the admin factory like below 
+
+				=> 'phone' => $faker->phone,
+
+		=> Then applying validation to this phone newly created field, we have to publish config file for that. and apply validation to only newly created fields not pre present fields
+                   And do that by running following command
+
+				=> php artisan vendor:publish --tag="multiauth:config"
+
+				=> apply validation like below
+
+					=> go to config folder and go to multiauth.php file and validations like below in validation array
+
+						=> 
+
+
+										Laravel 5.7 New Features 
+
+	Email Verification :- 
+
+			=> we just have to make auth command to set up laravel authentication 
+
+			=> now we have another extra column in the user model called email_verified_at.
+
+			=> this field is set to nullable because laravel dont restrict us to use this email verification function. if we want then configure it 
+
+  			   otherwise let it as it is.
+
+			Follow following steps to configure email_verification in laravel 
+
+			i.	First go to web.php file to set new route for auth
+
+					=> we just need to enter another optional parameter verify => true like below 
+	
+						=> Auth::routes(['verify' => true]);
+
+			ii.	Then just implement User model with MustVerifyEmail interface like below	
+	
+					class User extends Authenticatable implements MustVerifyEmail
+
+				Note :- remmember to include MustVerifyEmail class from 'use Illuminate\Contracts\Auth\MustVerifyEmail;' namespace
+
+	
+			iii.    We have to use email service to send verification link as a email. for that we are going to use Mailtrap to send dummy emails.
+
+					=> for setting up for mailtrap go to mail trap and login with google and then make a dummy inbox and 
+					   use given username and password and Mail_encryption to 'tls' like below in the .env file
+
+						=> MAIL_DRIVER=smtp
+						   MAIL_HOST=smtp.mailtrap.io
+						   MAIL_PORT=2525
+						   MAIL_USERNAME=b3d24c8c3d2d7f
+						   MAIL_PASSWORD=f612c45214bc0c
+						   MAIL_ENCRYPTION=tls
+
+			iv.	Now let suppose we have some pages in our application that are restricted to be viewed by only persons that have verified their 
+
+				email. then we have to protect these routes through a middleware called "verified" like below
+
+					for example we want to protect following route 
+
+						Route::get('/profile',function(){
+							return view('profile');
+						})->middleware('verified');	
+
+
+			v.	Now when we will go to this profile page we will asked for verifying first to access this page. once we verified we will be able 
+
+				to see that page.			
+			
+
+				            					      Using Mailtrap in Laravel 
+
+			iii.    If We have to use email service to send verification link as a email. for that we are going to use Mailtrap to send dummy emails.
+
+					=> for setting up for mailtrap go to mail trap and login with google and then make a dummy inbox and 
+					   use given username and password and Mail_encryption to 'tls' like below in the .env file
+
+						=> MAIL_DRIVER=smtp
+						   MAIL_HOST=smtp.mailtrap.io
+						   MAIL_PORT=2525
+						   MAIL_USERNAME=b3d24c8c3d2d7f
+						   MAIL_PASSWORD=f612c45214bc0c
+						   MAIL_ENCRYPTION=tls
+
+
+										Making an event Queable 
+
+		Note :- Means when a lot of of request are being processed at the same time then its not possible to listen each of them so we have to queue up events or request and read 
+			them one by one. So to make an event Queable we need to do following steps 
+
+		i.	First we have to implement event class with "ShouldQueue" class
+
+		ii.	then go to .env and change "QUEUE_DRIVER" to "database" instead of sync. ( in order to save Queue in the form of database table )
+
+		iii.	then run following command to create table for that Queue
+
+				=>	php artisan queue:table
+
+		iv.	Now whenever a new user will register ( According to this example ) a new job will be queued up in the job table untill "Queue Worker" does't run.
+			when Queue Worker will run this job will be automatically deleted from the job table
+
+		v.	In order to run Queue worker we need to run following command.
+
+				=>	php artisan queue:work
+
+
+										Pagination In Laravel
+
+
+		=> Let suppose we have 100 posts and we want to show them like 5 posts per page and user navigate to next to see next five posts and go back to 5 pages 
+		   to see previous 5 posts simply called pagination.
+
+
+		=> Now let suppose we have a PostController.php and in its index function we are passing 100 posts to the home view like below.
+
+			=> public function index()
+    			   {
+        			$posts = Post::all();
+        			return view('home')->with('posts',$posts);
+    			   }
+
+		=> And in home view we are showing all post in the form of list like below 
+
+			=> <ul>
+                    		@foreach ($posts as $post)
+                        	<a href=""><li>{{$post->name}}</li></a>
+                    		@endforeach
+                	   </ul>
+
+		=> Now we can see all 100 posts on home view , Now we want to apply pagination to posts means only 5 posts shows per page. So to do this 
+
+		   first go to index function of PostController and change Query to paginate(5) like below 
+
+			=> public function index()
+    			   {
+        			$posts = Post::paginate(5);
+        			return view('home')->with('posts',$posts);
+    			   } 
+
+		   second we have to go to the home view and right following line after </ul>, This will show a navigation tray to show numbring for posts
+
+			=> {{ $posts->links()  }}
+
+		   Note: Now pagination has been applied successfully
+
+
+
+
+		=> Additional
+	   
+		  	=> We can also set how many links should apear on each side of the selected numbred page by adding a function called onEachSide(3) like below 
+
+				=> {{ $posts->onEachSide(4)->links()  }}
+
+
+								Searching With Laravel Scout ( Powered By Algolia )
+	
+		Note :- Laravel Scout Provides us with Searching facility means we can search users and posts etc...
+
+			Laravel Scout provides a simple, driver based solution for adding full-text search to your Eloquent models. 
+			Using model observers, Scout will automatically keep your search indexes in sync with your Eloquent records.
+			Currently, Scout ships with an Algolia driver; however, writing custom drivers is simple and you are free 
+			to extend Scout with your own search implementations.
+
+		In this Example we will search users with their names
+
+		=>	for that first make Auth like below 
+
+				=> php artisan make:auth
+
+		=> 	Then install Laravel Scout in our project by running following command
+
+				=> composer require laravel/scout
+
+		=>	Then Publish scout configurations by running following command
+
+				=> php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
+
+		=>	Then add scout service provider in app->config->app.php in the providers array like below 
+
+				=> Laravel\Scout\ScoutServiceProvider::class,
+
+		=>	Then go to the model on which you want to applied searching like here in this example we want to search users by their names so we 
+			have to use following trait in out User model like below 
+
+				=>  use Searchable;
+
+		=> 	Now go to the User Model and use following function to say search through name of the users means here we have to provide column name 
+			of that model on which we want to apply searching
+
+				=>  public function searchableAs()
+    				    {
+        				return 'name';
+    				    }
+
+
+		=>	In this Example we are going to search users against their names so that we are going to create 100 dummy users through factories by running 
+			following command in tinker 
+			
+				=> first go to tinker by running following command 
+
+					=> php artisan tinker 
+	
+				=> then run following command
+		
+					=>  factory(App\User::class, 100)->create();
+				
+				=> Now we have 100 dummy users in database
+
+		=>	Laravel uses algolia Services for searching so that we have to create account in algolia
+
+		=>	After siging in we have to choose language as Laravel and then go to dashboard where we have "Application ID" and Admin API key
+
+		=> 	Now go to app->config->scout.php and add application key as Application ID and secret as Admin API key like below
+
+				=> 'algolia' => [
+      					  'id' => env('ALGOLIA_APP_ID', 'RJMUREOJMZ'),
+       					  'secret' => env('ALGOLIA_SECRET', 'd88e02c8489bd48700301f411ae7906f'),
+    				   ],
+
+		=>	Then we are going to get algolia sdk in our laravel application by running following command
+
+				=> composer require algolia/algoliasearch-client-php
+
+		=> 	Now whenever we create a new user algolia will automatically add each record into its database ( we can see in algolia dashboard )
+
+		=>	We can also save our previous data into algolia database by running following command like below 
+
+				=> php artisan scout:import "App\User"
+
+			=> Note : after running above command we have all the records of users in our algolia database
+
+		=> 	Now make a new view called search.blade.php and make a route for it and call it through HomeController.php like below 
+
+				=> web.php 
+
+					Route::get('/search/{searchkey}','HomeController@search');
+
+					Note:- We are passing searchKey means user name we want to search through url get params 
+
+				=> HomeController.php 
+
+					public function search($searchkey)
+    					{
+        					$users = User::search($searchkey)->get();
+        					return view('search')->with('users',$users);
+    					}
+
+					Note:- We are getting user params and searching on this and sending getted users to search view 
+
+				=> search.php
+
+					@foreach ($users as $user)
+						{{$user->name}} 
+						<br>
+					@endforeach
+
+		=> We can see searching is done well 
+
+	
+							        	Using different Langauges ( Localization )
+	
+		=> Let suppose we say our app is going to cover international users and we should have multiple language support in our project then we have to 
+		   add localization in our project 
+
+		=> First create a route in web.php file like below
+
+			Route::get('/test/{lang?}',function($lang=null){
+				App::setlocale($lang);
+				return view('test');
+			});
+			
+			Note :- Means the idea above is we want to get langauge type in the url as a parameter means if user give urdu parameter we will change 
+				the page to urdu language and if user give english parameter then page will be translated to english.
+
+		=> Now go to app->resources->lang, there we can see we have english by default language folder we can make make other language folders
+
+		=> Now let suppose in test.blade.php we have following code 
+
+			<p>Welcome to our site</p>
+
+		=> We want to convert this paragraph to other languages on basis of url parameter that mentioned above
+
+		=> Now make a file called welcome.php in app->resources->lang->en and paste following code 
+
+			=> 	<?php 
+
+					return [
+						'welcome' => 'Welcome to our site'
+					];
+
+				?>
+			Note :- We can have as many key value pairs of strings that we want to convert into other langauges
+
+
+		=> Now create another folder called urdu in app->resources->lang and copy above app->resources->lang->en->welcome.php into this new 
+		   urdu folder with same name and change the welcome key value to urdu value like below 
+
+			=>	<?php 
+
+					return [
+						'welcome' => 'Urdu wali string Copy kro or ider paste kro "Note editor urdu nai support kerta es liye ider nai likha"'
+					];
+
+			?>
+		
+		=> Now also create another folder for french language in app->resources->lang and copy above app->resources->lang->en->welcome.php into this 
+		   new french folder with the same name and change the welcome key value to french value like below
+
+
+			<?php 
+
+					return [	
+						'welcome' => 'Bienvenue sur notre site'
+					];
+
+			?>
+	
+		=> Now go to site with three different params like below and see results like below 
+
+			en => 	
+
+				Url : http://localhost/Laravel/Projects/LocalizationUsingMultipleLanguages/public/test/en
+
+				Result : Welcome to our site
+
+			urdu => 
+
+				Url : http://localhost/Laravel/Projects/LocalizationUsingMultipleLanguages/public/test/urdu
+				
+				Result : Urdu wala text notepad pe show nai hota
+
+			french => 
+
+				Url : http://localhost/Laravel/Projects/LocalizationUsingMultipleLanguages/public/test/french
+				
+				Result : Bienvenue sur notre site
+
+
+							Laravel Queue ( Sending Emails with no delay on application )
+
+
+		=> First make sure to add your database connections 
+
+		=> Then also change your QUEUE_CONNECTION to database in .env file 
+
+		=> Then we have to create a job table which holds all the Queued jobs by running following command 
+
+			=> php artisan queue:table
+
+			=> Then migrate it like below
+
+				=> php artisan queue:table
+
+		=> Now also create a table for failed jobs that holds all the failed Queued jobs
+
+			=> php artisan queue:failed-table
+
+			=> Then migrate it like below
+
+				=> php artisan migrate
+		
+		=> Now first create above SendEmailMailable mail class by running following command 
+
+			=> php artisan make:mail SendEmailMailable
+
+			Note:- We have created a mail class that is used to send multimedia data like views pages and images from application to email message
+			       here we are sending welcome view with email so that in the build function of that class return welcome view like below 
+
+				=> public function build()
+    				   {
+        				return $this->view('welcome');
+    				   }
+
+		=> Now We have to create jobs like below 
+
+			=> php artisan make:job JobName 
+
+			Note:- Now we can see job is created in app->jobs->JobName.php ( EmailSend in this Example )
+
+		=> Now we have to make our logic in the handle function of JobName.php like below 
+
+			Note :- Actually we are going to copy and paste the email send logic that we have done before in the 
+				route ( 10 steps before in same topic above ). like below
+
+			=> public function handle()
+    			   {
+       	 			Mail::to('usamafarooq2007@gmail.com')->send(new SendEmailMailable());
+    			   }
+		
+		=> Now we can call this job anywhere in the logic like in controllers or routes. but here we are going to stick with the same logic as we have done 
+		   above. Means we are going to dispatch this job in the route where we sended the mail directly before in 
+		   route ( 10 steps before in same topic above ). like below 
+
+			=> EmailJob::dispatch();
+
+		=> But now again we see we are getting the same delay from which we were actually getting rid off. The problem here is that our Queue job is running 
+		   right after we called it so it makes it able to delay our application again. So we should delay our job to some time and should go it in the 
+		   background so that we don't see any delay in our application. So we have to use delay function like below in web.php for delaying our job 
+
+			=> Route::get('/sendmail',function(){
+				EmailSend::dispatch()->delay(now()->addSeconds(10));
+				return "Email will be sended in 5 seconds automatically";
+			  });
+
+			Note:- In above route we are actually saying that send this email after 5 seconds of delay and our other code in this route will work
+			       fine means we don't have any delay and get return "Email will be sended in 5 seconds automatically".
+
+		=> Now to send email from our application we have to set up email configuration to go to app->config->mail.php and change from address and 
+		   name like below
+
+			=> 'from' => [
+      				  'address' => env('MAIL_FROM_ADDRESS', 'queueapp2007@gmail.com'),
+      				  'name' => env('MAIL_FROM_NAME', 'Usama Mughal'),
+   			   ],	
+
+		=> Now we also have to give our mailtrap email username and password in the .env file like below 
+
+			=> MAIL_DRIVER=smtp
+			   MAIL_HOST=smtp.mailtrap.io
+			   MAIL_PORT=2525
+			   MAIL_USERNAME=b3d24c8c3d2d7f
+			   MAIL_PASSWORD=f612c45214bc0c
+			   MAIL_ENCRYPTION=tls
+		=> Now listen for Queue jobs by running following command
+
+			=> php artisan queue:listen
+
+			Note:- This will listen for any Queue job to be carried out if any 
+	
+		Or 
+
+		=> Run Queue worker and say try for only once if it successfully done save into jobs and if not successed then place it into failed-jobs like below
+	
+			=> php artisan queue:work --tries=1
+
+		=> Now go to above route that we have defined in 4 steps back like below
+
+			=> http://localhost/Laravel/Projects/Laravel_Queue2/public/sendmail
+
+		=> Now we can see that we have successfully sending email without delaying our application
+				
+				
+										Laravel Events 
+
+
+		=> In new installation of laravel go to app->providers->EventServiceProvider.php and define your Events and Listners in the $listen attribute 
+
+		   (delete all previous value and add this below value into the $listen attribute ) like below 
+
+			=> protected $listen = [
+      			      	'App\Events\FirstEvent' => [
+        		      	'App\Listeners\FirstEventListner',
+        		      ]
+    			   ];
+
+			=> Note:- Above we have defined "FirstEvent" Event and "FirstEventListner" Listner for that. Means we always have one or many listners 
+			   to listen for an Event. 
+
+		=> Now for creating above "FirstEvent" Event and "FirstEventListner" Listner we have to run following command and that will generate all our 
+		   defined Events and Listners in the $listen attribute mentioned above.
+
+			=> php artisan event:generate
+
+			=> Now we can see we have app->Events->FirstEvent.php and app->Listners->FirstEventListner.php
+
+		=> Now we are going to pass value from the constructor to the custom $message data member like below
+
+			=>	protected $message;
+
+				public function __construct($message="")
+    				{
+    				    $this->message = $message;
+    				}
+
+			=> Now this $message will automatically be passed to "FirstEventListner" Listner and we can use it in the "FirstEventListner" Listner's handle
+			   method like below
+
+				=> public function handle(FirstEvent $event)
+    				   {
+        				dd($event);
+    				   }
+
+			=> Now we will see $message value in die and dump screen after setting up route 
+
+		=> Now we have to set up route to trigger this event. ( We can trigger this event anywhere like in controller or routes or anywhere else in our app )
+		   like below we are triggering events in the event route like below 
+
+			=> Route::get('/event',function(){
+				event(new FirstEvent("Its Working ?"));
+			   });
+
+			=> Now we can see that our route is giving us above message value means our event is triggered and our listner catches it successfully.
+
+
+
+									Laravel Broadcasting System
+
+		=> Laravel broadcasting make it possible for us to change anything on our page without refreshing it means it does the same job which we do 
+		   through ajax. 
+
+		=> For getting started first we have to install pusher by running following command 
+
+			=> composer require pusher/pusher-php-server "~3.0"
+
+		=> Now first we have to create an account on pusher 
+
+		=> Then create a new app with your preffered name and go to app keys tab to get your app keys to use in our laravel application 
+
+		=> Now update your .env file with your APP_ID , APP_KEY and APP_SECRET get from pusher app keys tab like below 
+		
+			=> PUSHER_APP_ID=597264
+			   PUSHER_APP_KEY=ca91fb824e00f8cd9325
+			   PUSHER_APP_SECRET=9b4370e51924fa1d2a03
+
+		=> Now also change your BROADCAST_DRIVER to "pusher" in .env file like below 
+
+			=> BROADCAST_DRIVER=pusher
+
+		=> Now copy following two lines to app->config->broadcasting.php and inside of the options array like below 
+
+			=> Copy these two lines 
+
+					'cluster' => 'your Cluster name get from pusher app keys tab as we get APP_ID and others',
+    					'encrypted' => true
+			
+			=> Copy into options like below 
+
+					'options' => [
+                				'cluster' => env('ap2'),
+                				'encrypted' => true,
+            				]
+
+			OR
+
+			=> We can also set PUSHER_APP_CLUSTER in .env file instead of in last step we have done. So we can do like below 
+
+					'options' => [
+                				'cluster' => env('PUSHER_APP_CLUSTER'),
+                				'encrypted' => true,
+            				]
+
+			=> Now change PUSHER_APP_CLUSTER to your CLUSTER value from pusher app keys tab like below 
+	
+					=> PUSHER_APP_CLUSTER=ap2
+
+		=> Now we must have some evnets that triggers up and we listen them whenever they occur this is what broadcasting is 
+
+			=> For example we are going to create "FirstEvent" event and "FirstEventListner" Listner like below 
+
+		=> go to app->providers->EventServiceProvider.php and define your Events and Listners in the $listen attribute 
+
+		   (delete all previous value and add this below value into the $listen attribute ) like below 
+
+			=> protected $listen = [
+      			      	'App\Events\FirstEvent' => [
+        		      	'App\Listeners\FirstEventListner',
+        		      ]
+    			   ];
+
+			=> Note:- Above we have defined "FirstEvent" Event and "FirstEventListner" Listner for that. Means we always have one or many listners 
+			   to listen for an Event. 
+
+		=> Now for creating above "FirstEvent" Event and "FirstEventListner" Listner we have to run following command and that will generate all our 
+		   defined Events and Listners in the $listen attribute mentioned above.
+
+			=> php artisan event:generate
+
+			=> Now we can see we have app->Events->FirstEvent.php and app->Listners->FirstEventListner.php
+
+		=> Now we are going to pass value from the constructor to the custom $message data member like below
+
+			=>	protected $message;
+
+				public function __construct($message="")
+    				{
+    				    $this->message = $message;
+    				}
+
+			=> Now this $message will automatically be passed to "FirstEventListner" Listner and we can use it in the "FirstEventListner" Listner's handle
+			   method like below
+
+				=> public function handle(FirstEvent $event)
+    				   {
+        				dd($event);
+    				   }
+
+			=> Now we will see $message value in die and dump screen after setting up route 
+
+		=> Now we have to set up route to trigger this event. ( We can trigger this event anywhere like in controller or routes or anywhere else in our app )
+		   like below we are triggering events in the event route like below 
+
+			=> Route::get('/event',function(){
+				event(new FirstEvent("Its Working ?"));
+			   });
+
+			=> Now we can see that our route is giving us above message value means our event is triggered and our listner catches it successfully.
+			
+
+		=> Now we have created our events and listners but now i have to impliment "FirstEvent" Event with "ShouldBroadcast" interface to be able 
+		   to broadcast it to pusher like below 
+
+			=> 	class FirstEvent implements ShouldBroadcast
+
+
+		=> Then also make a channel name below in the same "FirstEvent" class's broadcastOn() function means ( Means we will open a message on road 
+		   which having that name and only the persons that are on the same road or channel will be listened that event or message )
+
+		   	now make a channel named as testchannel in the broadcastOn() function of FirstEvent.php Event like below 
+
+				=> public function broadcastOn()
+    				   {
+        				return new PrivateChannel('testchannel');
+    				   }
+
+		=> Now we dont need listners for that event because we are directly pushing our Event to the Pusher 
+
+		=> Now go to app->config->app.php and uncomment BroadcastServiceProvider from Service provider array
+
+				=> App\Providers\BroadcastServiceProvider::class,
+
+		=> Now we can observe we have recieved this event in the pusher console debuge tab online and also our listner catching this event.
+
+		=> Till now we have broadcasted our event to the pusher and now we want to listen this on our page from pusher. for that follow below
+
+		=> Now we are going to make a listner route that listen pusher events and will return "listenBroadcast" so make route like below
+
+			=> Route::get('/listen',function(){
+				return view('listenBroadcast');
+			   });
+
+		   	=> Now create listenBroadcast view as well
+
+
+		=> In order to listen from pusher we have to install Laravel Echo like below 
+
+			=> npm install --save laravel-echo pusher-js
+
+		=> Then we have to go to the app->resources->js->bootstrap.js and uncomment below laravel Echo code like below 
+
+			=> import Echo from 'laravel-echo'
+
+			   window.Pusher = require('pusher-js');
+
+			   window.Echo = new Echo({
+			       broadcaster: 'pusher',
+    			       key: process.env.MIX_PUSHER_APP_KEY,
+    			       cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    			       encrypted: true
+			   });
+		
+			Note:- Actually this Echo is listning for any event to occur from pusher
+
+		=> Then go to the app.js file in the same directory and make logic in the vue component. Let suppose we say whenever this component 
+		   is created we want to start echoing from a channel means if something happen on this channel we should get notified like below 
+
+			=> Echo.private('testchannel')
+    				.listen('FirstEvent', (e) => {
+        			console.log(e);
+    			   });
+
+			Note :- Means above we are saying that whenever our app starts ( Because this component is app.js means it is a global general component )
+				we should start listning for events on the testchannel and if we get any show it to the console
+
+
+		=> As In this example we are working on private channels so that we have to make authentication system through auth like below 
+
+			=> php artisan make:auth
+
+		=> Then we also have to connect our database and then migrate as well	
+
+		=> Then go to routes->channels.php and make a new broadcast channel like below 
+
+			=> Broadcast::channel('testchannel', function ($user, $id) {
+    				return true;
+			   });
+
+			Note :- Above we are actually allowing a logged in user to access this channel "testchannel" which we have created for this exercise.		
+	
+		=> Then in order to compile javaScript code we have to install Laravel Mix like below 
+
+			=> npm install 
+
+			=> npm run watch
+
+		=> now our listened route returend view is something like below ( which we have created a few steps back )
+
+			=> Means we should have to include our javascript file in order to take pusher response from laravel echo so our view must be like below
+
+				<!DOCTYPE html>
+				<html>
+					<head>
+						<title>Broadcasting</title>
+						<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+						<meta name="csrf-token" content="{{ csrf_token() }}">
+					</head>
+					<body>
+	
+						<div id="app"></div>
+
+						<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+					</body>
+				</html>
+
+
+		Note :- Now run your code on two different browsers and with two different logins one should run public/check route and other should run 
+			public/listen route and we will see check will create an event and this will save into the pusher and then Laravel Echo will 
+			get it back from pusher to our app with help of Vue. So whenever we reload that route we will get message in the console of other user which 
+			is running listning route.
+
+
+								     Gates AND Policies In Laravel
+
+
+	Intro :- Gates and policies are used in laravel for protecting something from unauthorized users or let suppose we want that some specific 
+		 should be shown to some specific user only or we want that some pages must show to subscribers only. 
+	
+	=> For that make auth and add another column in the users migration called subscriber which is set to boolean type.
+
+	=> Let suppose we have users table in which we have subscriber column which is a boolean column which is 1 for subscriber users and 0 for non-subscriber users.
+
+	=> Let suppose we have following route and we want to go to payment_page but it should go if and only if user is subscribed otherwise show a message saying  
+	   subscribe first.
+
+		Route::get('payment_page',function (){
+			return view('payment_page');
+		});
+
+	=> Now Define a gate in app->providers->AuthServiceProvider in boot function saying only subscribers can view this payment page 
+
+		=> 
+			
+			public function boot()
+    			{
+        			$this->registerPolicies();
+
+			        Gate::define('subscribers-only', function ($user) {
+            				if($user->subscriber == 1)
+            				{
+                				return true;
+            				}else
+            				{
+                				return false;
+            				}
+        			});
+    			}
+
+
+	=> Now apply this gate on the route like below 
+
+		=> 
+
+		Route::get('payment_page',function (){
+			if (Gate::allows('subscribers-only', Auth::user())) {
+    				return view('payment_page');	
+			}
+			else
+			{
+				return "You have to subscribe to see this page";
+			}
+		});
+
+		
+	Note:- Now we can see that only subscribe users have access to payment_page
+
+	
+	=>	   Now we want to show views to show data dynamically depending on situation means let take above example we want a button to be shown 
+		   on the navbar called "Payments" only if logged in user is a subscriber as well. If the logged in user is not a subscriber then this 
+		   "Payments" button should not show to the user. To do that we apply policy of app.blade.php file ( for this scenario ) because navbar code 
+		   is in app.blade.php. Like below 
+
+			@can('subscribers-only', Auth::user())
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url('payment_page') }}">Payments</a>
+                                </li>
+                        @endcan
+	
+		   Note :- Means now only subscribers can see this button for payments
+
+
+	=> Policies
+
+		Above we have used our Gate in the closure function ( see above 4 steps ). means we have used closure function in route where we have 
+		define our rout. Same as we can call functions directly in the route as well as call a controller and place function logic in the controllers function
+
+		For example if we want to call index.blade.php we can call it through two ways from route 
+
+			i. Route::get('index',function(){
+				return view('index');
+			   });
+
+			ii. Route::get('index','HomeController@index');
+			
+				=> HomeController.php
+
+					public function index(){
+					    return view('index');
+					}
+
+		Note:- Same as above example as we have done the same logic directly in the route function and through controller function 
+
+		Same as that now we want to make our gates through policies means policies are just like controllers to gates.
+
+		we have to define functions in the policies instead of defining them into the boot function 
+
+		=> We can create policy through following command 
+
+			=> php artisan make:policy UserPolicy 
+
+		=> UserPolicy.php
+
+			<?php
+
+				namespace App\Policies;
+
+				use App\User;
+				use Illuminate\Auth\Access\HandlesAuthorization;
+
+				class UserPolicy
+				{
+    					use HandlesAuthorization;
+
+				        /**
+     					* Create a new policy instance.
+     					*
+     					* @return void
+     					*/
+    					public function __construct()
+    					{
+        					//
+    					}
+
+    					public function subscriber($user) {
+        					if($user->subscriber == 1)
+        					{
+            						return true;
+        					}else
+        					{
+            						return false;
+        					}
+    					}
+				}
+
+		And our route is below 
+
+			Route::get('payment_page',function (){
+				if (Gate::allows('subscribers-only', Auth::user())) {
+    					return view('payment_page');	
+				}
+				else
+				{
+					return "You have to subscribe to see this page";
+				}
+			});
+
+
+		And Below we have Gate Defined in the boot function of AuthServiceProvider.php. Means below in boot function we will just define and impliment the 
+		logic in the Policy's function like below 
+
+			public function boot()
+    			{
+        			$this->registerPolicies();
+
+        			Gate::define('subscribers-only', 'App\Policies\UserPolicy@subscriber');
+    			}
+
+			Note :- 
+
+			Above we have defined Gate in the boot function but its logic code is implemented in "UserPolicy" Policy's subscriber function like below
+
+			public function subscriber($user) {
+        			if($user->subscriber == 1)
+        			{
+	         			return true;
+        			}else
+        			{
+            				return false;
+        			}
+    			}
+
+
+	=> Note :- We also have Resource Policies like we have Resource Controllers. For example we have a post table and we want to give view post access to all 
+		   persons and delete posts to some specific persons and update posts to some specific person then we simply use Resource Policies. 
+
+		   For checking out about Resource Policies go to Laravel Documentation its very easy to use.			
+	
+
+									    Laravel Notifications
+
+	
+	=> We can send notifications to email , slack and SMS service and others with Laravel
+
+	=> Creating a new Notification in laravel 
+			
+		=> php artisan make:notification NameOfNotification
+
+		=> Now we have app->notification->NameOfNotification.php
+
+	=> As we are firstly going to send email notifications so that we have to setup mailtrap crendentials in the .env file like below 
+
+		=> 
+			MAIL_DRIVER=smtp
+			MAIL_HOST=smtp.mailtrap.io
+			MAIL_PORT=2525
+			MAIL_USERNAME=b3d24c8c3d2d7f
+			MAIL_PASSWORD=f612c45214bc0c
+			MAIL_ENCRYPTION=tls
+
+	=> Now we are going to make a route to send email through event we have just created in two step before 
+
+		=> Route::get('sendNotificaion',function(){
+			Auth::user()->notify(new NotificationName);
+			return "Notification Sended";
+		   });
+
+		=> we can also send messages to many people like below with another way 
+
+			$users = Users::all();
+			Notification::send($users, new NotificationName);
+
+	Note :- Now we can see that our email notifications are taking 4 , 6 seconds to complete. And during these 4 , 6 seconds our application goes to sleep 
+		which we dont want. What we want is actually pushing this email function to a Queue and Start working Queue in the background and our application 
+		runs smoothly as expected. To set up Queues for our email follow following steps
+
+	i.	First implements Notification ( to which notification we want to make queueable ) to ShouldQueue
+
+	ii.	Then change QUEUE_CONNECTION to database instead of sync in .env file like below 
+
+			=> QUEUE_CONNECTION=database
+
+	iii.	Then make a job table for Queues where uncompleted jobs will be placed by running following command
+
+			=>  php artisan queue:table
+
+	iv.	We can also make a table to hold all failed Queued jobs like below 
+
+			=> php artisan queue:failed-table
+	
+	v. 	Now in order to keep track of Queues and running Queue job we have to run Queue worker by running following command
+
+			=> php artisan queue:work
+
+	vii.	Now we can see all the jobs present in the job Queue are one by one proceding and completing one by one when run Queue worker. This Queue 
+		worker should keep running on the production server. We should have to configure this Queue worker on the production server in order to keep 
+		it running to complete queued jobs
+
+
+
+					
+									Export HTML Page into PDF Files
+
+	Introduction :- Through this laravel package we can download our HTML page as it is in the form of pdf file which includes all the images 
+			tags and each and everything same like a page converted to a pdf file. Its Awesome... isn't ?  
+
+	i. 	First install new laravel project
+
+	ii.	Then go to following link of Github package 
+	
+			=> https://github.com/barryvdh/laravel-dompdf
+
+	iii.	Then for installing this package we have to run following command on the gitbash 
+
+			=> composer require barryvdh/laravel-dompdf	
+
+	iv. 	Then make a route like below 
+
+			=> Route::get('/pdf', 'PdfController@index');
+
+	v.	Then we have to make above used controller first like below 
+
+			=> php artisan make:controller PdfController
+
+	vi.	Then in the index function of PdfController we have to impliment following code 
+
+			=> $data = ['name' => 'Usama Mughal'];
+    			   $pdf = PDF::loadView('invoice', $data);
+			   return $pdf->download('invoice.pdf');
+
+			=> also remmember import PDF class like below 
+
+				=> use PDF; ( on top below namespace like i have given below in the example )
+
+		Note :- above "invoice" is the name of the view called "invoice.blade.php" and "invoice.pdf" is the name of the file and $data is the parameter 
+			we are sending it to invoice.blade.php.
+		Note :- Now if we go to /pdf route we will get invoice.pdf downloaded.
+
+	vii.	In obove example we have sended $data as a parameter to the invoice view and we can access it in the invoice.blade.php like below 
+
+			=> invoice.blade.php 
+
+				Hello from {{ $data['name'] }}
+
+		Note:- Now we can see we have downloaded pdf file where we have all the invoice page.
+
+	viii. 	We can also make a small test demo app where we will have a export button and we will download the page when user click on this button like below 
+
+			=> invoice.blade.php 
+
+				<!DOCTYPE html>
+				<html lang="en">
+					<head>
+						<meta charset="UTF-8">
+						<title>Export this page to pdf</title>
+					</head>
+					<body>
+						{{-- <h1>Hello {{ $data['name'] }}</h1> --}}
+						<h1>Hello from Usama Mughal</h1>
+						<img style="width:250px;height: 200px" src="https://www.yamatojk.co.jp/wordpress/wp-content/uploads/2016/12/mv_04.jpg">
+						<a href="{{ route('exportPdf') }}">Export This Page to PDF</a>
+					</body>
+				</html>
+
+			=> web.php 
+
+				Route::get('/pdf', 'PdfController@index')->name('pdf');
+
+				Route::get('exportPdf', 'PdfController@export')->name('exportPdf');
+
+			=> PdfController.php 
+
+				use PDF;
+				use Illuminate\Http\Request;
+
+				class PdfController extends Controller
+				{
+    					public function index()
+    					{
+  					  	return view('invoice');
+    					}
+	
+    					public function export()
+    					{
+    						$data = ['name' => 'Usama Mughal'];
+    						$pdf = PDF::loadView('invoice',compact('data'));
+						return $pdf->download('invoice.pdf');
+    					}
+				}
+
+	=> Instead of downloading let suppose we want just to show an HTML page in the form of a pdf file in the new tab then we should use only 
+	   stream() method instead of download() method like above. We can do this like below 
+
+		=> $data = ['name' => 'Usama Mughal'];
+    		   $pdf = PDF::loadView('invoice',compact('data'));
+		   return $pdf->download('invoice.pdf');
+
+	=> Note :- We Have a lot of other options as well to check them go to following link 
+
+		=> https://github.com/barryvdh/laravel-dompdf
+
+				
+									Sending SMS to mobile with Laravel
+	
+	=> Install new Laravel project
+	
+	=> Then install Nexmo package into our project by running following command 
+
+		=> composer require nexmo/laravel
+
+	=> Then we have to run following command to publish config file for nexmo into our project by running following commnad 
+
+		=> php artisan vendor:publish
+
+		Note:- Now we have nexmo.php file in config folder then we have to set our API_KEY and API_SECRET_KEY like below 
+
+			'api_key'    => '26dfdc8f',
+    			'api_secret' => 'RhUHyWxdoee0jU5l', 
+		
+		Note:- Get these keys from nexmo site by logging in
+
+	=> Then make a route to send message from a url to send a message directly by going into this url like below 
+
+		=> web.php 
+
+			Route::get('/', function () {
+    				Nexmo::message()->send([
+    					'to'   => '923157721671',
+    					'from' => '923157721671',
+    					'text' => 'Sended Message from Laravel'
+				]);
+				return "Message has been sended successfully";
+			});
+
+	=> Now when we will go to root url of the site we will get a text message on our number. 
+	Note:- For this demo sms i have used my own number as a sender and reciever
+
+	=> For more see GitHub package :- https://github.com/Nexmo/nexmo-laravel
+
+	=> For vedio help go to :- https://www.youtube.com/watch?v=9k3gqI1GU6Q&t=23s
+
+
+
+								  Chat Application ( Laravel + Vue js + Laravel Echo ) 
+
+	=> First install new Laravel project and then connect your database as well 
+
+	=> Then make a simple auth command for default user login system
+
+	=> Then add two columns in user migration like below 
+	
+		=> create_user_table.php
+		
+			=> $table->string('phone')->nullable();
+		   	   $table->string('profile_image')->nullable();
+
+	=> Then migrate like below 
+
+		=> php artisan migrate
+
+	=> Then we also have to add these columns to the UserFactory for fake data like below 
+
+		=> UserFactory.php		
+			
+			=> 'phone' => $faker->phone,
+			   'profile_image' => 'https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-512.png',
+
+		=> Then create 15 users with faker
+		
+			=> go to tinker by running following command 
+	
+				=> php artisan tinker
+
+			=> then run following command in the tinker 
+		
+				=> factory(App\User::class, 15)->create();
+			
+				=> Now we have created dummy 15 users in the database
+
+	=> Then we have to create a Message model as well as create_message_table migration by running following single command on single step
+
+		=> php artisan make:model Message -m
+
+	=> Then add below two columns in the create_messages_table migration
+
+		=> 		
+	
+			=> $table->integer('from')->unsigned();
+            	   	   $table->integer('to')->unsigned();
+            	   	   $table->text('text');
+
+	=> Then create a factory for messages in the UserFactory.php by coping User's faker code and pasting below and create 100 dummy messages like below
+
+		=> UserFactory.php ( i'm listing whole file so you can understand how we can create multiple factories in the same file )
+	
+			=> $factory->define(App\User::class, function (Faker $faker) {
+    			   	return [
+        		   		'name' => $faker->name,
+        				'phone' => $faker->phoneNumber,
+        				'email' => $faker->unique()->safeEmail,
+        				'email_verified_at' => now(),
+        				'profile_image' => 'https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-512.png',
+        				'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        				'remember_token' => str_random(10),
+    				];
+			   });
+
+			   $factory->define(App\Message::class, function (Faker $faker) {
+    			   	// Now we want to restrict that sender and reciever id's does't match. because sender is not 
+    			   	// a reciever and reciever can never be sender at the same time
+    			   	do{
+    					$from = rand(1,15);
+    					$to = rand(1,15);
+    			   	}while($from === $to);
+    			   	// Means above we are saying that if $from id and to id are matched then iterate and generate a new random number and pass it in.  
+
+    			   	return [
+    					'to' => $from,
+    					'from' => $to,
+    					'text' => $faker->sentence,
+    			   	];
+			   });
+
+	=> Then migrate like below 
+
+		=> php artisan migrate
+
+	=> Then we have go to tinker and run following command to create 100 dummy messages in the messages table
+
+		=>  factory(App\Message::class, 100)->create()
+
+		=>  Now we have 100 dummy messages with from and to id's 
+
+	=> Then install npm in order to run Laravel Mix to compile all vue files and javaScript files into app/public/app.js file. to do this run following command 
+
+		=> npm install && npm run watch
+
+	=> Then we are also going to change name example-component to chat-app and Change name of ExampleComponent.vue file to ChatApp.vue
+
+	=> Then we have to add script tag in the app.blade.php ( at the botton before closing tag of body ) to include all the javaScript into the views like below 
+
+		=> <script type="text/javascript" src="{{ asset('app/app.js') }}"></script>	
+
+	=> Then go to home.blade.php and change section to following code 
+
+		=> <div class="container">
+    			<div class="row justify-content-center">
+        			<div class="col-sm-12">
+            				<div class="card">
+                				<div class="card-header">Chat Application</div>
+
+                				<div class="card-body" id="app">
+                    					<chat-app></chat-app> 
+                				</div>
+            				</div>
+        			</div>
+    			</div>
+		  </div>
+		
+		Note :- Now everthing in view will be placed in the div have id as apps
+			As i have used chat-app component inside of app it will show in this div 
+
+	=> Now we are going to design our views for chat 
+
+		let suppose we have an ChatApp component which is the root component and inside of it we have two sections one section is showing 
+		all the contacts and second second showing the selected contact messages and message composer and username
+
+		Means we have to design an ChatApp component and inside of it we will have two section and one is for Contacts and One is for Conversation
+		like below 
+			
+		=> ChatApp.vue
+
+			=> <template>
+    				<div class="chat-app">
+        				<Conversation :selectedContact="selectedContact" :messages="messages"></Conversation>
+        				<Contact :contacts="contacts"></Contact>
+    				</div>
+          		   </template>
+
+			   <script>
+    					import Conversation from './Conversation';
+    					import Contact from './Contact';
+   				 	export default {
+        					data(){
+            						return {
+                						messages: [],
+                						contacts: [],
+                						selectedContact: null
+          	 					}
+        					},
+        					components:{
+            						Conversation,
+            						Contact
+        					},
+        					props:['user'],
+        					mounted() {
+            						console.log(this.user);
+            						axios.get('contacts')
+                						.then((response)=>{
+                    							console.log(response.data);
+                    							this.contacts = response.data;
+                						});
+        					}
+    					}
+			     </script>
+	
+		=> Conversation.vue
+
+			=> <template>
+    				<div class="chat-app">
+        
+    				</div>
+			   </template>
+
+			   <script>
+    				export default {
+    					props:['messages','selectedContact'],
+        				mounted(){
+        					console.log('Conversation Component Mounted');
+        				}
+    				}
+			   </script>
+
+		=> Contact.vue
+			
+			<template>
+    				<div class="chat-app">
+        				<ul>
+        					<li v-for="contact in contacts" :key="contact.id">
+        						<div class="avatar">
+        							<img :src="contact.profile_image" style="width: 50px;height:50px" :alt="contact.name"/>
+        						</div>
+        						<div class="contact">
+        							<p class="name">{{ contact.name }}</p>
+        							<p class="email">{{ contact.email }}</p>
+        						</div>
+        					</li>
+        				</ul>
+    				</div>
+			</template>
+
+			<script>
+    				export default {
+    					props:['contacts'],
+        				mounted(){
+        					console.log('Contact Component Mounted');
+        				}
+    				}
+			</script>
+
+	
+		=> app.js 
+
+			Vue.component('chat-app', require('./components/ChatApp.vue'));
+
+			const app = new Vue({
+    				el: '#app'
+			});
+
+		=> home.blade.php
+
+			<div class="card-body" id="app">
+                    		<chat-app :user="{{ auth::user() }}"></chat-app>
+                	</div>						
+
+
+									  Laravel Spatie ( Permissions )
+
+		
+
+
+
+// Errors 
+	
+1.
+
+In Connection.php line 664:
+
+  SQLSTATE[42000]: Syntax error or access violation: 107
+  1 Specified key was too long; max key length is 767 by
+  tes (SQL: alter table `users` add unique `users_email_
+  unique`(`email`))
+
+
+In Connection.php line 458:
+
+  SQLSTATE[42000]: Syntax error or access violation: 107
+  1 Specified key was too long; max key length is 767 by
+  tes
+
+	// Solution 
+		i.   First add following line in boot() function  (  in app->Providers->AppServiceProvider  )
+			use Illuminate\Support\Facades\Schema; 
+			Schema::defaultStringLength(191);
+		ii.  Second database must create with utf8mb4
+	// For more detail
+	https://laravel-news.com/laravel-5-4-key-too-long-error
+
+ 	
+
+2. Always check your mass assignments
+
+
+
+												Hosting Info
+
+Note :- (Important Error)
+	
+	When we deployee our Laravel site on the Shared hosting then its very much important to check that the cpanel's PHP version and Our Project's PHP version is the same 
+	Laravel 5.6 works only with PHP 7 and above
+
+
+											Naming Conventions in Laravel
+
+
+									i. 	Model Names Must be like Post , User , Comment
+									ii. 	Database tables must be like posts , users, comments 
+									iii.    controllers be like PostsController , UsersController , CommentsController
+									iv.     Primary keys must be 'id' 
+									v.	Foreign keys must be like 'user_id' , 'post_id'
+									
+
+// Remaining Topics
+
+	i.    Voyager ( Admin panel ) ( Awesome )
+	ii.   Social media connectivity with laravel
+
+
+                         <--===========================JWT Token by Bitfumes========================-->
+1-follow that link for using it https://jwt-auth.readthedocs.io/en/develop/laravel-installation/
+2-upgrade version of jwt in composer.json with (1.0.0-rc.2)
+3- set config/auth.php with this
+4-change guard web to api
+
+'defaults' => [
+        'guard' => 'api',
+        'passwords' => 'users',
+    ],
+
+change driver token to jwt
+'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+    ],
+
+5-run command php artisan jwt:secret
+6-include use Tymon\JWTAuth\Contracts\JWTSubject; in user model and implements JWTSubject
+and add two functions in last 
+ public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+}
+7-Paste it in api.php
+Route::group([
+
+    'prefix' => 'auth'
+
+], function ($router) {
+
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+
+});
+
+
+                       <===========================Custom Logout Function=======================>
+
+In your web.php (routes):
+
+add:
+
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout')->name('logout');
+In your LoginController.php
+
+add:
+
+public function logout(Request $request) {
+  Auth::logout();
+  return redirect('/login');
+}
+Also, in the top of LoginController.php, after namespace
+
+add:
+
+use Auth;
+use Illuminate\Http\Request;
+
+and change post to get in your app.blade.php form method of logout
+
+
+
+               <========================Password Reset===========================>
+MAIL_DRIVER=sendmail
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=tls
+
+alse change in mail.php that exist in config folder
+ 'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+'port' => env('MAIL_PORT', 587),
+'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'ahmedraza6828@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Send Mail'),
+    ],
+
+
+ public function email(Request $request){
+        $email=$request->email;
+        $user=User::where('email',$email)->first();
+        if(!is_null($user)){
+            $hashed_random_password = str_random(8);
+$uss=User::where('email',$em)->update([
+          'password'=>Hash::make($hashed_random_password),
+        ]);
+        }
+Mail::send([],[],function($message) use($emails,$hashed_random_password){
+        $message->to($emails,'To User');
+        $message->from('Rashidbuttuog@gmail.com','Realtyezy');
+      $message->subject('Forget Password');
+      $message->setBody('<img style="width:100px; height:100px;" src="http://rmsystemorigami.com/Reali/public/images/splash_icon.png" /><h2>This  is your new password from Realtyezy</h2><h1 style="color:#f50000">'.$hashed_random_password.'</h1>','text/html');
+
+    });
+     return response()->json(['status_description'=>'Success','status_code'=>200,'message'=>'send']);
+
+        
+    }
+
+      <============================================Post on Another Site=========================================>
+      $data1 = [
+    'vhlno' => $request->vhlno,
+    
+];
+      
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+    CURLOPT_URL => "http://www.mtmis.excise-punjab.gov.pk",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30000,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "POST",
+    CURLOPT_POSTFIELDS =>$data1,
+    // CURLOPT_HTTPHEADER => array(
+    //     // Set here requred headers
+    //     "accept: */*",
+    //     "accept-language: en-US,en;q=0.8",
+    //     "content-type: application/json",
+    // ),
+));
+
+$response = curl_exec($curl);
+// $re=json_encode($response);
+ // print_r($re);
+return response()->json(['success'=>$response]);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+    echo "cURL Error #:" . $err;
+} else {
+   
+}
+
+
+
+<============================================TOASTR NOTIFICATION=========================================>
+
+1. First add these CDN's to your website in CSS & JS Portion respoectively.
+
+	https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css
+	
+	
+
+https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js
+
+
+2. Then create an array in the your respective controller like this
+
+	$notification = array(
+            'message' => 'Sub Post is created...!',
+            'alert-type' => 'success'
+        );
+
+	
+   and pass it to your view
+
+	return redirect('URL')->with($notification);
+
+
+
+3. In blade file you can get your notification message
+
+	
+	<script>
+           @if(Session::has('message'))
+             var type = "{{ Session::get('alert-type', 'info') }}";
+    	     switch(type){
+             case 'info':
+              toastr.info("{{ Session::get('message') }}");
+              break;
+
+            case 'warning':
+              toastr.warning("{{ Session::get('message') }}");
+              break;
+
+            case 'success':
+              toastr.success("{{ Session::get('message') }}");
+              break;
+
+            case 'error':
+              toastr.error("{{ Session::get('message') }}");
+              break;
+            }
+          @endif
+        </script>
+
+
+
+
+
+<=========================================PAGINATION WITH NAV TABS=======================================>
+
+
+1. Suppose we need 2 paginations on single page within nav tabs, then there will be issues regarding URL parameters mismatch when we click on pagination links of both. 
+   
+   And also when the page refresh, the active tab will be infront of us rather than the tab which we previously visited.
+
+ 
+		
+   So we will do in our controller like this.
+
+			
+	=>  $posts = Post::paginate(8, ['*'], 'pos');
+			
+	=>  $videos = Video::paginate(8, ['*'], 'vid');
+
+
+
+   And in blade append links currents of other to keep the position
+			
+	=>  {{ $posts->appends(['pos' => $posts->currentPage(), 'vid' => $videos->currentPage()])->links()}}
+		
+	=>  {{ $videos->appends(['pos' => $posts->currentPage(), 'vid' => $videos->currentPage()])->links()}}
+
+
+   
+  Also add script to show the previously visited tab
+
+	
+	$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+    	   var id = $(e.target).attr("href");
+           localStorage.setItem('selectedTab', id)
+        });
+
+        var selectedTab = localStorage.getItem('selectedTab');
+	if (selectedTab != null) {
+    	   $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab('show');
+        }
+
+       <====================================Get Day Name through Date===============================>
+       $date = '2014-02-25';
+$dat=date('l', strtotime($date));
+return $dat;
+die;
+
+    <=========================================Password Forget==========================================>
+ 1: Change in .env file Like,
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=base64:cZl/piFDOg3TgFtyON6RkuSMGI1V6pQhsz6+nq24f/Y=
+APP_DEBUG=true
+APP_URL=http://rmsystemorigami.com/Realyezview/
+
+
+    <=========================================How to use toastr in ajax==========================================>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+toastr.success('Success');
+
+    <=========================================Encryption==========================================>
+
+$encrypter = app('Illuminate\Contracts\Encryption\Encrypter');
+
+// Encrypt the string `Hello, Universe`
+$encrypted = $encrypter->encrypt('Hello, Universe');
+$encrypteds=$encrypter->decrypt($encrypted);
+ 
+    <=========================================Push Notification==========================================>
+function send_push($title , $body ,$tokens,$order_id)
+    {
+        // return $tokens;
+
+        $ch = curl_init();
+        curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
+        curl_setopt( $ch,CURLOPT_POST, true );
+        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );        
+        //Custom data to be sent with the push
+        $data2=array(
+            'order_id'=>$order_id,
+            'notification_type'=>'rating'
+        );
+        $data = array
+            (
+                'message'      => 'here is a message. message',
+                'title'        => $title,
+                'body'         => $body,
+                'smallIcon'    => 'small_icon',
+                'some data'    => 'Some Data',
+                'Another Data' => 'Another Data',
+                'click_action' => 'OPEN_ACTIVITY',
+                'sound'=>'default'
+               
+            );
+
+        //This array contains, the token and the notification. The 'to' attribute stores the token.
+        $arrayToSend = array(
+                             'registration_ids' => $tokens,
+                             'notification' => $data,
+                             'data' => $data2,
+                             'priority'=>'high'
+                              );
+
+        //Generating JSON encoded string form the above array.
+        $json = json_encode($arrayToSend);
+        //Setup headers:
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        
+        $headers[] = 'Authorization: key= AIzaSyDAAKZz29uPRcnsenJUbLLtL0m2Gko2vxw';
+
+
+        //Setup curl, add headers and post parameters.
+        
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);       
+
+        //Send the request
+        $response = curl_exec($ch);
+
+        //Close request
+        curl_close($ch);
+        return $response;
+
+        // echo $response;
+
+    }
+
+<==================difference of days between two dates in Jquery==========================>
+ var startDay = new Date('07/31/2019');
+                  var endDay = new Date('08/02/2019');
+                  var millisecondsPerDay = 1000 * 60 * 60 * 24;
+
+                  var millisBetween = startDay.getTime() - endDay.getTime();
+                  var days = millisBetween / millisecondsPerDay;
+
+                  // Round down.
+                  alert( Math.floor(days));
+
+<==================add column in existing table==========================>
+php artisan make:migration add_phone_number_to_customers_table --table=customers
+
+<==================Toastr with Page Load==========================>
+Controller:
+
+$notification = array(
+	'message' => 'I am a successful message!', 
+	'alert-type' => 'success'
+);
+
+return Redirect::to('/')->with($notification);
+
+View:
+
+<script>
+  @if(Session::has('message'))
+    var type = "{{ Session::get('alert-type', 'info') }}";
+    switch(type){
+        case 'info':
+            toastr.info("{{ Session::get('message') }}");
+            break;
+        
+        case 'warning':
+            toastr.warning("{{ Session::get('message') }}");
+            break;
+
+        case 'success':
+            toastr.success("{{ Session::get('message') }}");
+            break;
+
+        case 'error':
+            toastr.error("{{ Session::get('message') }}");
+            break;
+    }
+  @endif
+</script>
+
+<==========================Social Media posting =====================>
+https://www.youtube.com/watch?v=LQ6R9NPtRfc
+
+<==========================Preview Image before Upload =====================>
+
+<input type='file' id="upload" onChange="readURL(this);"/>
+<img id="img" src="#" alt="your image" />
+
+  function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#img').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $(".im").change(function(){
+        readURL(this);
+    });
+
+
+<==========================Delete record after month =====================>
+
+DB::table('applicants')->where('AppDate', '<', 'NOW() - INTERVAL 30 DAY')->delete();
+
+<==========================Search with jquery =====================>
+$( '.search-query' ).keyup( function() {
+var matches = $( 'ul#member_list' ).find( 'li:contains('+ $( this ).val() +') ' );
+$( 'li', 'ul#member_list' ).not( matches ).slideUp();
+matches.slideDown(); 
+});
+
+
+<========================== Twillio SMS Verification =====================>
+1:Hit this Command on CMD composer require twilio/sdk
+
+2:Put these Credentials in Controller 
+use Twilio\Rest\Client;
+use Twilio\Jwt\AccessToken;
+use Twilio\Jwt\Grants\VoiceGrant;
+use Twilio\Twiml;
+
+3:Write that code in ur function 
+$charset = "0987654321";
+      $base = strlen($charset);
+      $result = '';
+      $now = explode(' ', microtime())[1];
+      while ($now >= $base)
+      {
+          $i = $now % $base;
+          $result = $charset[$i] . $result;
+          $now /= $base;
+       }
+
+      $v_code = substr($result, -4);
+
+      $account_sid = 'ACc16935e5ba641a7fb530cb079d497f0d';
+      $auth_token  = '2561601068d5704d56c85cfee004ba8f';
+      $phone_check=User::where('phone_number',$phone)->first();
+
+      $client = new Client($account_sid, $auth_token);
+      $client->messages->create(
+          $phone,
+          array(
+              'from' => '+13345680002',
+              'body' => 'Your Weave app verification code is: ' . "\r\n" . ' ' . $v_code
+          )
+      );
+
+
+<========================== Table Drag and Drop Rows =====================>
+//Jquery Code
+
+<script src="https://v71.appcrates.co/retroPixel/public/dist/advanced-datatable/jquery.tablednd_0_5.js" type="text/javascript"></script>
+$("#dynamic-table tbody").tableDnD({
+        onDrop: function(table, row) {
+            var orders = $.tableDnD.serialize();
+            // alert(orders);
+            $.post('{{ url("/change_order_category") }}', 
+                { orders : orders , _token: '{{csrf_token()}}'}, function(data) {
+      // alert(data);
+      location.reload(true);
+
+      
+    });
+
+
+        }
+    });
+
+//Controller Code
+
+public function change_order_product(Request $request)
+    {
+
+    $orders = explode('&', $request->orders);
+
+    $array = array();
+
+    foreach($orders as $item) {
+        $item = explode('=', $item);
+        $item = explode('_', $item[1]);
+        $array[] = $item[1];
+    }
+
+    // return $array;
+    // die;
+
+
+    for($i=0; $i<count($array); $i++){
+        // print_r($i);
+        // print_r($array[$i]);
+        Category::where([['id', $array[$i]],['status', 1]])->update(['priority' => $i]);
+
+    }
+
+    echo "Successfully Category Order Changed";
+    // try {
+
+    //     $objDb = new PDO('mysql:host=localhost;dbname=abc_medwin', 'root', '');
+    //     $objDb->exec("SET CHARACTER SET utf8");
+
+    //     foreach($array as $key => $value) {
+    //         $key = $key + 1;
+            
+    //         //echo $key;
+
+    //         //echo $value;
+
+    //         $sql = "UPDATE `categories`
+    //                SET `order` = ?
+    //                WHERE `id` = ?";
+    //                // echo $aql;
+    //          $objDb->prepare($sql)->execute(array($key, $value));
+
+
+
+    //     }
+    //         echo "Successfully Order Change";
+
+    //     } catch(Exception $e) {
+
+    //         echo json_encode(array('error' => false));
+
+    //     }
+
+
+    }
+    
+
+<======================================Sum of Column in jquery===============================>
+$(".cd_body td:nth-child(7)").each(function () {
+            var value=$(this).text();
+                if($(this).text()=="undefined"){
+                value=value.replace("undefined","0");
+            }
+            var val = value.replace(" ", "").replace(",-", "");
+            creditTotal += parseInt(val);
+            });
+
+<======================================Sum of Column in dataTable===============================>
+ var table=$('.cd_table').DataTable();
+ table.columns( 6 ).every( function () {
+    var sum = this
+        .data()
+        .reduce( function (a,b) {
+            // if(b!="undefined" || b!="null"){
+            return parseInt(a) + parseInt(b);
+            // }
+        } );
+        $("#credit_total").html(sum);
+  
+} );
+
+
+<==============================================Laravel 7 Auth===================================>
+https://www.itsolutionstuff.com/post/laravel-6-multi-auth-authentication-tutorialexample.html
+
+<==============================================Remove Public===================================>
+
+<?php
+
+/**
+ * Laravel - A PHP Framework For Web Artisans
+ *
+ * @package  Laravel
+ * @author   Taylor Otwell <taylor@laravel.com>
+ */
+
+$uri = urldecode(
+    parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
+);
+
+// This file allows us to emulate Apache's "mod_rewrite" functionality from the
+// built-in PHP web server. This provides a convenient way to test a Laravel
+// application without having installed a "real" web server software here.
+if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
+    return false;
+}
+
+require_once __DIR__.'/public/index.php';
+
+
+
+<===========================================LiveChat with Bot=================================================>
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = 12248385;
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+    </script>
+    <noscript><a href="https://www.livechatinc.com/chat-with/12248385/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+    <!-- End of LiveChat code -->
+
+<============================================Cron Job in Laravel=============================================>
+https://tutsforweb.com/how-to-set-up-task-scheduling-cron-job-in-laravel/#:~:text=Laravel%20Cron%20Job%20is%20an,users%20at%20a%20periodic%20time.
+
+
+<=======================================Telegram Bot===========================================================>
+https://dev.to/yongkylie/telegram-bot-with-laravel-framework-tutorial-2cca#:~:text=Go%20to%20our%20Laravel%20project,php%20.
