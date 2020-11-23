@@ -4249,3 +4249,5 @@ https://tutsforweb.com/how-to-set-up-task-scheduling-cron-job-in-laravel/#:~:tex
 
 <=======================================Telegram Bot===========================================================>
 https://dev.to/yongkylie/telegram-bot-with-laravel-framework-tutorial-2cca#:~:text=Go%20to%20our%20Laravel%20project,php%20.
+<====================Laravel Coding Tips======================================>
+https://medium.com/@alexrenoki/pushing-laravel-further-best-tips-good-practices-for-laravel-5-7-ac97305b8cac
