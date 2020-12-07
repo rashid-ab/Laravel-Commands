@@ -2,3 +2,5 @@
 https://www.youtube.com/watch?v=Jc2MX0Ew3PE
 <==============================Splash Screen==============>
 https://dev.to/cmcodes/how-to-add-splash-screen-in-a-react-native-android-app-287l
+<==============================CLI ios build========================>
+https://www.youtube.com/watch?v=Wb9yQUP04zg
