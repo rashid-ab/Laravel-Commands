@@ -4251,3 +4251,28 @@ https://tutsforweb.com/how-to-set-up-task-scheduling-cron-job-in-laravel/#:~:tex
 https://dev.to/yongkylie/telegram-bot-with-laravel-framework-tutorial-2cca#:~:text=Go%20to%20our%20Laravel%20project,php%20.
 <====================Laravel Coding Tips======================================>
 https://medium.com/@alexrenoki/pushing-laravel-further-best-tips-good-practices-for-laravel-5-7-ac97305b8cac
+<=====================================Multiple data insert================================>
+https://www.youtube.com/watch?v=sAjLREMr-9k 
+<==================================Secure .env file===================================>
+<Files .env>
+        Order allow,deny
+        Deny from all
+</Files>
+Options All -Indexes
+<==========================Jwt middleware======================>
+https://blog.pusher.com/laravel-jwt/
+<==============================================Page Sum in DataTable================================>
+var config_array = ({
+  ServerSide: true,
+  ajax: ({
+    url: "view_stats/make_stats_test",
+  data: {get_fields: params},
+  type: 'POST',
+  }),
+  columns: columns,
+  drawCallback:function(){var api = this.api();  $( api.table().footer() ).html(api.column( [4,5,6,7,8,9], {page:'current'} ).data().sum());},
+  order: [
+    [1, 'asc']
+  ]
+});
+var table = $('#example').DataTable(config_array);
