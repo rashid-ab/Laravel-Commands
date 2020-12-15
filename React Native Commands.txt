@@ -10,3 +10,5 @@ https://medium.com/@dinukadilshanfernando/implementing-a-barcode-scanner-by-usin
 https://medium.com/mop-developers/50-react-native-tips-part-1-2-5cb12803228b
 <==============================Tips and Tricks Part 1======================>
 https://medium.com/mop-developers/50-react-native-tips-part-2-2-51d5cd2baa4a
+<==============================Offline=====================================>
+https://www.npmjs.com/package/react-native-offline
