@@ -4278,3 +4278,7 @@ var config_array = ({
 var table = $('#example').DataTable(config_array);
 <=============================global variable================================>
 https://stackoverflow.com/questions/25189427/global-variable-for-all-controller-and-views
+<=============================Implode associative array======================>
+array('id' =>2,'name'=>Rashi);
+$fields = '`' . implode('`, `', array_keys($profie_data)) . '`';
+$data   = '\'' . implode('\', \'', $profie_data) . '\'';
