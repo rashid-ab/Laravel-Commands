@@ -4282,3 +4282,5 @@ https://stackoverflow.com/questions/25189427/global-variable-for-all-controller-
 array('id' =>2,'name'=>Rashi);
 $fields = '`' . implode('`, `', array_keys($profie_data)) . '`';
 $data   = '\'' . implode('\', \'', $profie_data) . '\'';
+<=============================Permissions==========================>
+https://www.youtube.com/watch?v=zIgYJlu03bI
