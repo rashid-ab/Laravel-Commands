@@ -14,3 +14,5 @@ https://medium.com/mop-developers/50-react-native-tips-part-2-2-51d5cd2baa4a
 https://www.npmjs.com/package/react-native-offline
 <==============================Loader======================================>
 https://morioh.com/p/3ea5e5a4f007
+<==============================Vector Icon in React Ntvie CLI==============>
+https://www.youtube.com/watch?v=xz5D2w5C1Lo
