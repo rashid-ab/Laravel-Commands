@@ -4284,3 +4284,5 @@ $fields = '`' . implode('`, `', array_keys($profie_data)) . '`';
 $data   = '\'' . implode('\', \'', $profie_data) . '\'';
 <=============================Permissions==========================>
 https://www.youtube.com/watch?v=zIgYJlu03bI
+<==================================Social Login===================>
+https://www.youtube.com/watch?v=0y0N75gkLb4
