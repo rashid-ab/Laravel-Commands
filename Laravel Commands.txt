@@ -4288,3 +4288,5 @@ https://www.youtube.com/watch?v=zIgYJlu03bI
 https://www.youtube.com/watch?v=0y0N75gkLb4
 <==================================Get ALL Tables of Database with Query===================>
 SELECT * FROM information_schema.tables
+<==================================Animation js========================>
+https://codepen.io/collection/XLebem/?cursor=ZD0xJm89MSZwPTEmdj03OQ==
