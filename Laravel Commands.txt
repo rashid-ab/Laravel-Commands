@@ -4290,3 +4290,4 @@ https://www.youtube.com/watch?v=0y0N75gkLb4
 SELECT * FROM information_schema.tables
 <==================================Animation js========================>
 https://codepen.io/collection/XLebem/?cursor=ZD0xJm89MSZwPTEmdj03OQ==
+<==================================Hide Error Screen with database name and Password====================> 
