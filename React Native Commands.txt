@@ -18,3 +18,6 @@ https://morioh.com/p/3ea5e5a4f007
 https://www.youtube.com/watch?v=xz5D2w5C1Lo
 <===============================update code in android studio=================>
 npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
+<===============================Resource Dublication Solution=================>
+1:Go to android/app/src/main/res and delete all the directories starting with drawables
+2:change your directory to /android . It is always a good idea to run ./gradlew clean (skip the “./” if you’re a windows user)
