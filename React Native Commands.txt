@@ -4,6 +4,8 @@ https://www.youtube.com/watch?v=Jc2MX0Ew3PE
 https://dev.to/cmcodes/how-to-add-splash-screen-in-a-react-native-android-app-287l
 2nd Maintaind for SplashScreen Option
 https://github.com/zoontek/react-native-bootsplash
+Video Tutorial
+https://www.youtube.com/watch?v=yFrx8HZlNtI&feature=emb_logo
 <==============================CLI ios build========================>
 https://www.youtube.com/watch?v=Wb9yQUP04zg
 <==============================Barcode Scanner======================>
