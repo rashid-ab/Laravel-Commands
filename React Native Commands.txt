@@ -2,6 +2,10 @@
 https://www.youtube.com/watch?v=Jc2MX0Ew3PE
 <==============================Splash Screen==============>
 https://dev.to/cmcodes/how-to-add-splash-screen-in-a-react-native-android-app-287l
+2nd Maintaind for SplashScreen Option
+https://github.com/zoontek/react-native-bootsplash
+Video Tutorial
+https://www.youtube.com/watch?v=yFrx8HZlNtI&feature=emb_logo
 <==============================CLI ios build========================>
 https://www.youtube.com/watch?v=Wb9yQUP04zg
 <==============================Barcode Scanner======================>
@@ -18,5 +22,11 @@ https://morioh.com/p/3ea5e5a4f007
 https://www.youtube.com/watch?v=xz5D2w5C1Lo
 <===============================update code in android studio=================>
 npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
+<<<<<<< HEAD
 <===============================Responsive=================================>
 https://www.youtube.com/watch?v=Mxl_X22_Ybg
+=======
+<===============================Resource Dublication Solution=================>
+1:Go to android/app/src/main/res and delete all the directories starting with drawables
+2:change your directory to /android . It is always a good idea to run ./gradlew clean (skip the “./” if you’re a windows user)
+>>>>>>> d4f57afd3770d321fb1ba30f030674d18f420d32
