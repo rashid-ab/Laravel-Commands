@@ -18,3 +18,5 @@ https://morioh.com/p/3ea5e5a4f007
 https://www.youtube.com/watch?v=xz5D2w5C1Lo
 <===============================update code in android studio=================>
 npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
+<===============================Responsive=================================>
+https://www.youtube.com/watch?v=Mxl_X22_Ybg

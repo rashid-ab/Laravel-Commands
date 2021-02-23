@@ -4291,3 +4291,28 @@ SELECT * FROM information_schema.tables
 <==================================Animation js========================>
 https://codepen.io/collection/XLebem/?cursor=ZD0xJm89MSZwPTEmdj03OQ==
 <==================================Hide Error Screen with database name and Password====================> 
+'debug_hide' => [
+        '_ENV' => [
+            'APP_KEY',
+            'DB_PASSWORD',
+        ],
+
+        '_SERVER' => [
+            'APP_KEY',
+            'DB_PASSWORD',
+        ],
+
+        '_POST' => [
+            'password',
+        ],
+    ],
+<==================================Laravel With React Installation===========================>
+1:Create Laravel Project 7.0
+composer create-project --prefer-dist laravel/laravel:^7.0
+2:Install Laravel Ui for Laravel 7.0
+composer require laravel/ui "^2.1" --dev
+3:Installing React
+You get Commands from that url https://laravel.com/docs/7.x/frontend
+
+<==================================Amazon S3 Bucket======================================>
+https://www.youtube.com/watch?v=BQ0gi9YHuek
