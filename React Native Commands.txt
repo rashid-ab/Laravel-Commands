@@ -25,8 +25,8 @@ npx react-native bundle --platform android --dev false --entry-file index.js --b
 <<<<<<< HEAD
 <===============================Responsive=================================>
 https://www.youtube.com/watch?v=Mxl_X22_Ybg
-=======
 <===============================Resource Dublication Solution=================>
 1:Go to android/app/src/main/res and delete all the directories starting with drawables
 2:change your directory to /android . It is always a good idea to run ./gradlew clean (skip the “./” if you’re a windows user)
->>>>>>> d4f57afd3770d321fb1ba30f030674d18f420d32
+<===============================Custom Drawer=================================>
+https://reactnavigation.org/blog/2020/01/29/using-react-navigation-5-with-react-native-paper/
